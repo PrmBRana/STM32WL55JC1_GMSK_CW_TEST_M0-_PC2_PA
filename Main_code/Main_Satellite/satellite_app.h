@@ -26,13 +26,16 @@ extern "C" {
 #define SAT_CFG_DEFAULT_SRC_SSID           1
 #define SAT_CFG_DEFAULT_DEST_CALLSIGN      "GROUND"
 #define SAT_CFG_DEFAULT_DEST_SSID          0
-#define SAT_CFG_DEFAULT_TX_POWER_DBM       14                      /* Transmit RF power in dBm */
+#define SAT_CFG_DEFAULT_TX_POWER_DBM       14                      /* Transmit RF power in dBm (14 dBm into External PA = ~25 dBm output) */
 #define SAT_CFG_DEFAULT_BITRATE_BPS        4800                    /* GMSK Bitrate (4800 bps) */
 #define SAT_CFG_DEFAULT_FDEV_HZ            1200                    /* GMSK Frequency Deviation (+/- 1.2 kHz) */
 #define SAT_CFG_DEFAULT_TX_TIMEOUT_MS      3000                    /* Radio transmission timeout in ms */
 
 /* RF Front-End Switch Selection: RBI_SWITCH_RFO_LP (Low Power) or RBI_SWITCH_RFO_HP (High Power) */
 #define SAT_CFG_DEFAULT_RF_SWITCH          RBI_SWITCH_RFO_LP
+
+/* CPU2 (Cortex-M0+) Vector Table Base Address in Flash */
+#define SATELLITE_CPU2_VECTOR_TABLE_ADDR   0x08032000UL
 
 /* 2. Startup / Console Settle Delay */
 #define SAT_CFG_DEFAULT_UART_SETTLE_MS     50                      /* Settle delay in ms after UART init */
@@ -133,6 +136,12 @@ extern const SatelliteConfig_t SatelliteDefaultConfig;
  * SATELLITE API FUNCTIONS - ACCESSIBLE FROM MAIN
  * ============================================================================
  */
+
+/* 0. Low-Level CPU2 Hardware & Peripheral Bus Initialization */
+void                     Satellite_Hardware_Init(void);
+void                     Satellite_Init_VectorTable(void);
+void                     Satellite_Init_PeripheralClocks(void);
+void                     Satellite_Init_IPCC_Isolation(void);
 
 /* 1. Core Lifecycle & Configuration */
 void                     Satellite_Init(const SatelliteConfig_t *config);

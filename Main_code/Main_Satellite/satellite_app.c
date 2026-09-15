@@ -379,11 +379,83 @@ const SatelliteConfig_t* Satellite_GetConfig(void) {
     return &s_config;
 }
 
+/*
+ * ============================================================================
+ * LOW-LEVEL HARDWARE INITIALIZATION (CPU2 / CORTEX-M0+ DOMAIN)
+ * ============================================================================
+ */
+
+/**
+ * @brief  Point Cortex-M0+ Vector Table Offset Register (VTOR) to CPU2 Flash base.
+ * @note   CPU2 firmware binary is located at 0x08032000 in Dual-Core Flash layout.
+ */
+void Satellite_Init_VectorTable(void) {
+    SCB->VTOR = SATELLITE_CPU2_VECTOR_TABLE_ADDR;
+    __DSB();
+    __ISB();
+}
+
+/**
+ * @brief  Enable all required peripheral bus clocks in the CPU2 (Cortex-M0+) domain.
+ *         Uses standard CMSIS RCC register definitions:
+ *         - RCC->C2AHB2ENR: GPIO Ports A, B, C, and H
+ *         - RCC->C2AHB3ENR: IPCC, Flash interface, HSEM
+ *         - RCC->C2APB2ENR: USART1 debug console
+ *         - RCC->C2APB3ENR: SUBGHZSPI radio interface
+ */
+void Satellite_Init_PeripheralClocks(void) {
+    /* 1. Enable GPIOA, GPIOB, GPIOC, GPIOH clocks in CPU2 domain (AHB2: 0x5800014C |= 0x87) */
+    RCC->C2AHB2ENR |= (RCC_C2AHB2ENR_GPIOAEN |
+                       RCC_C2AHB2ENR_GPIOBEN |
+                       RCC_C2AHB2ENR_GPIOCEN |
+                       RCC_C2AHB2ENR_GPIOHEN);
+
+    /* 2. Enable IPCC, Flash interface, and HSEM clocks in CPU2 domain (AHB3: 0x58000150 |= (1<<0) | (1<<25)) */
+    (*(volatile uint32_t *)0x58000150UL) |= (1UL << 0) | (1UL << 25);
+    RCC->C2AHB3ENR |= (RCC_C2AHB3ENR_IPCCEN  |
+                       RCC_C2AHB3ENR_FLASHEN |
+                       RCC_C2AHB3ENR_HSEMEN);
+
+    /* 3. Enable USART1 bus clock in CPU2 domain (APB2: 0x58000160 |= (1<<14)) */
+    RCC->C2APB2ENR |= RCC_C2APB2ENR_USART1EN;
+
+    /* 4. Enable SUBGHZSPI radio SPI interface bus clock in CPU2 domain (APB3) */
+    RCC->C2APB3ENR |= RCC_C2APB3ENR_SUBGHZSPIEN;
+}
+
+/**
+ * @brief  Disable and mask IPCC (Inter-Processor Communication Controller) interrupts
+ *         in CPU2 domain to prevent unhandled mailbox IRQs from trapping the CPU2 core.
+ */
+void Satellite_Init_IPCC_Isolation(void) {
+    /* Clear CPU2 control register: disable RX occupied and TX free interrupt generation (0x58000C10) */
+    IPCC->C2CR = 0x00000000;
+
+    /* Mask all 6 bidirectional mailbox channels for CPU2 (0x58000C14) */
+    IPCC->C2MR = 0xFFFFFFFF;
+
+    /* Disable IRQ1 (vector position 1 in startup_cm0p.s: IPCC_C2_RX_C2_TX) and CMSIS IRQ 18 */
+    NVIC_DisableIRQ((IRQn_Type)1);
+    NVIC_DisableIRQ(IPCC_C2_RX_C2_TX_IRQn);
+}
+
+/**
+ * @brief  Complete low-level CPU2 hardware initialization sequence:
+ *         1. Relocates vector table to CPU2 flash base
+ *         2. Enables peripheral bus clocks in CPU2 domain
+ *         3. Isolates IPCC inter-core interrupts
+ */
+void Satellite_Hardware_Init(void) {
+    Satellite_Init_VectorTable();
+    Satellite_Init_PeripheralClocks();
+    Satellite_Init_IPCC_Isolation();
+}
+
 void Satellite_Init(const SatelliteConfig_t *config) {
     Satellite_SetConfig(config);
 
     if (s_config.rfSwitchConfig == 0) {
-        s_config.rfSwitchConfig = RBI_SWITCH_RFO_LP;
+        s_config.rfSwitchConfig = SAT_CFG_DEFAULT_RF_SWITCH;
     }
 
     uint32_t uart_delay = (s_config.uartSettleDelayMs > 0) ? s_config.uartSettleDelayMs : 50;
@@ -391,22 +463,13 @@ void Satellite_Init(const SatelliteConfig_t *config) {
     uint32_t bitrate    = (s_config.bitrateBps > 0) ? s_config.bitrateBps : RADIO_BIT_RATE_BPS;
     uint32_t fdev       = (s_config.fdevHz > 0) ? s_config.fdevHz : RADIO_FDEV_HZ;
 
-    /* 1. Ensure VTOR is locked to CPU2 flash at 0x08032000 */
-    SCB->VTOR = 0x08032000;
+    /* 1. Ensure low-level hardware, vector table, and peripheral clocks are initialized */
+    Satellite_Hardware_Init();
 
-    /* 2. Enable IPCC, SUBGHZSPI, and SRAM2 peripheral bus clocks in CPU2 domain */
-    (*(volatile uint32_t *)0x58000150UL) |= (1UL << 0) | (1UL << 25);
-
-    /* 3. Enable GPIOA, GPIOB, GPIOC peripheral bus clocks in CPU2 domain */
-    (*(volatile uint32_t *)0x5800014CUL) |= 0x87;
-
-    /* 4. Enable USART1 bus clock in CPU2 domain */
-    (*(volatile uint32_t *)0x58000160UL) |= (1UL << 14);
-
-    /* 5. Initialize UART1 immediately so console is alive */
+    /* 2. Initialize USART1 immediately so console is alive */
     uart1_init();
 
-    /* 6. Core architecture & peripheral clock init */
+    /* 3. Core architecture & peripheral clock init */
     SystemInit();
     HAL_Init();
     SysTick_Init_CPU2(HAL_RCC_GetHCLK2Freq());
