@@ -45,8 +45,8 @@ extern "C" {
  * GFSK / G3RUH
  * ============================================================
  */
-// Optimal drive power: 13 dBm (clean saturated external PA output, soft transient, zero brownout reset)
-#define RADIO_TX_POWER_DBM             13
+// Full +14 dBm drive power: yields full +24.5 dBm on 3.3V PA and +27.0 dBm on 5V PA
+#define RADIO_TX_POWER_DBM             14
 
 /*
  * GMSK External Power Amplifier Selection:
