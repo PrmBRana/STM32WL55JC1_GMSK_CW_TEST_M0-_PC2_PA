@@ -552,6 +552,20 @@ void Satellite_Init(const SatelliteConfig_t *config) {
     uart1_puts("     STM32WL55 CORTEX-M0+ SATELLITE RADIO SYSTEM INITIALIZING         \r\n");
     uart1_puts("======================================================================\r\n");
     uart1_puts("[INIT] 1. SystemCoreClock & HAL Base Initialized .......... [OK]\r\n");
+
+    /* Read and display hardware reset reason from RCC->CSR */
+    uint32_t csr = RCC->CSR;
+    uart1_printf("       - Hardware Reset Cause (RCC->CSR=0x%08lX): ", (unsigned long)csr);
+    if (csr & RCC_CSR_LPWRRSTF) uart1_puts("LowPower ");
+    if (csr & RCC_CSR_WWDGRSTF) uart1_puts("WWDG ");
+    if (csr & RCC_CSR_IWDGRSTF) uart1_puts("IWDG ");
+    if (csr & RCC_CSR_SFTRSTF)  uart1_puts("Software ");
+    if (csr & RCC_CSR_BORRSTF)  uart1_puts("BOR(BrownOut) ");
+    if (csr & RCC_CSR_PINRSTF)  uart1_puts("PIN(NRST/STLink) ");
+    if (csr & RCC_CSR_OBLRSTF)  uart1_puts("OBL ");
+    uart1_puts("\r\n");
+    RCC->CSR |= RCC_CSR_RMVF; /* Clear reset flags for clean subsequent boot diagnostic */
+
     uart1_printf("[INIT] 2. CPU2 SysTick Timer Started (%lu MHz) .............. [OK]\r\n",
                  (unsigned long)(HAL_RCC_GetHCLK2Freq() / 1000000UL));
     uart1_puts("[INIT] 3. USART1 Console Initialized (PA9 TX / PA10 RX @ 115200) .. [OK]\r\n");
@@ -560,7 +574,11 @@ void Satellite_Init(const SatelliteConfig_t *config) {
     Satellite_SetRFSwitch(RBI_SWITCH_OFF);
     uart1_puts("[INIT] 4. RF Dual-PA & 5V DC/DC Configured (Standby: ALL OFF) ... [OK]\r\n");
     uart1_puts("       - CW Mode   : 3.3V External PA (PC2/SO2) | 5V DC/DC (PA0): OFF\r\n");
-    uart1_puts("       - GMSK Mode : 5V External PA (PC3/SI2)   | 5V DC/DC (PA0): ENABLED\r\n");
+    if (s_config.rfSwitchConfig5V == RBI_SWITCH_RFO_LP5V) {
+        uart1_puts("       - GMSK Mode : 5V External PA (PC3/SI2)   | 5V DC/DC (PA0): ENABLED (Flight Mode)\r\n");
+    } else {
+        uart1_puts("       - GMSK Mode : 3.3V External PA (PC2/SO2) | 5V DC/DC (PA0): OFF (Safe Bench Mode)\r\n");
+    }
 
     MX_SUBGHZ_Init();
     HAL_NVIC_SetPriority(SUBGHZ_Radio_IRQn, 0, 0);
@@ -700,17 +718,37 @@ void Satellite_GMSK_Prepare(void) {
     uint8_t pa_sel = (s_config.rfSwitchConfig == RBI_SWITCH_RFO_HP) ? RFO_HP : RFO_LP;
     Radio.Standby();
 
-    /* 1. Ensure 3.3V External PA (PC2) is OFF */
-    HAL_GPIO_WritePin(GPIOC, AMP_3V3_EN_PIN, GPIO_PIN_RESET);
+    if (s_config.rfSwitchConfig5V == RBI_SWITCH_RFO_LP5V) {
+        /*
+         * 5V External PA Mode (Flight Mode):
+         * 1. Ensure 3.3V External PA (PC2) is completely OFF
+         * 2. Enable 5V DC/DC Converter (PA0 = 1)
+         * 3. Settle delay: 50 ms soft-start for 5V boost capacitors to reach steady state,
+         *    preventing input rail collapse / BOR reset on cold boots.
+         * 4. Configure RF switch (PC4=0, PC5=1) and assert 5V External PA (PC3 = 1)
+         * 5. Settle delay: 15 ms for PA DC bias stabilization before RF transmission.
+         */
+        HAL_GPIO_WritePin(GPIOC, AMP_3V3_EN_PIN, GPIO_PIN_RESET);
+        RBI_Enable5VDCDC(1);
+        CPU2_Delay_Ms(50); /* 50 ms robust capacitor soft-start settle delay */
 
-    /* 2. Enable 5V DC/DC Converter (PA0 = 1) */
-    RBI_Enable5VDCDC(1);
-    CPU2_Delay_Ms(15); /* 15 ms soft-start settle delay for 5V boost capacitor charging */
+        RBI_SetTxSwitchConfig(RBI_SWITCH_RFO_LP5V);
+        Satellite_SetRFSwitch(RBI_SWITCH_RFO_LP5V);
+        CPU2_Delay_Ms(15); /* 15 ms PA bias settle delay */
+    } else {
+        /*
+         * 3.3V External PA Mode (Safe Bench / ST-Link USB Mode):
+         * 1. Ensure 5V DC/DC (PA0) and 5V PA (PC3) are OFF
+         * 2. Enable 3.3V External PA (PC2 = 1)
+         * 3. Current draw remains <170 mA - zero brownout risk under any USB supply!
+         */
+        RBI_Enable5VDCDC(0);
+        HAL_GPIO_WritePin(GPIOC, AMP_5V_EN_PIN, GPIO_PIN_RESET);
 
-    /* 3. Configure RF switch and assert 5V External PA (PC3 = 1) */
-    RBI_SetTxSwitchConfig(s_config.rfSwitchConfig5V);
-    Satellite_SetRFSwitch(s_config.rfSwitchConfig5V);
-    CPU2_Delay_Ms(5);  /* 5 ms PA bias settle delay */
+        RBI_SetTxSwitchConfig(s_config.rfSwitchConfig);
+        Satellite_SetRFSwitch(s_config.rfSwitchConfig);
+        CPU2_Delay_Ms(5);  /* 5 ms PA settle delay */
+    }
 
     SUBGRF_SetStandby(STDBY_RC);
     SUBGRF_SetPacketType(PACKET_TYPE_GFSK);
@@ -780,8 +818,13 @@ void Satellite_Run_GMSK_Burst_Session_Ex(uint32_t cycle,
                  (unsigned long)(s_config.radio.txFrequency / 1000000UL),
                  (unsigned long)((s_config.radio.txFrequency % 1000000UL) / 1000UL),
                  power);
-    uart1_printf(" RF Switch          : %s (5V External PA PC3 / SI2)\r\n", "RBI_SWITCH_RFO_LP5V");
-    uart1_puts(" 5V DC/DC (PA0)     : ENABLED (Powering 5V External PA)\r\n");
+    if (s_config.rfSwitchConfig5V == RBI_SWITCH_RFO_LP5V) {
+        uart1_printf(" RF Switch          : %s (5V External PA PC3 / SI2)\r\n", "RBI_SWITCH_RFO_LP5V");
+        uart1_puts(" 5V DC/DC (PA0)     : ENABLED (Powering 5V External PA)\r\n");
+    } else {
+        uart1_printf(" RF Switch          : %s (3.3V External PA PC2 / SO2)\r\n", "RBI_SWITCH_RFO_LP");
+        uart1_puts(" 5V DC/DC (PA0)     : OFF (Safe Bench Mode)\r\n");
+    }
     uart1_puts(" Protocol           : AX.25 UI Frame + G3RUH Scrambler\r\n");
     uart1_printf(" Bitrate            : %lu bps GMSK\r\n", (unsigned long)bitrate);
     uart1_printf(" Session Duration   : %lu Seconds continuous burst\r\n", (unsigned long)(duration_ms / 1000));

@@ -176,11 +176,12 @@ int32_t RBI_ConfigRFSwitch(RBI_Switch_TypeDef Config)
          * 5. Assert 5V External PA (PC3 / SI2 = 1) - 5V power amplifier active
          * 6. PA bias network & switch settle delay (~1 ms)
          */
-        HAL_GPIO_WritePin(AMP_3V3_EN_PORT, AMP_3V3_EN_PIN, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(DCDC_5V_EN_PORT, DCDC_5V_EN_PIN, GPIO_PIN_SET);
-
-        /* DC/DC 5V voltage boost ramp settle (~5 ms at 48 MHz) */
-        for (volatile uint32_t i = 0; i < 60000; i++) { __NOP(); }
+        if (HAL_GPIO_ReadPin(DCDC_5V_EN_PORT, DCDC_5V_EN_PIN) != GPIO_PIN_SET)
+        {
+            HAL_GPIO_WritePin(DCDC_5V_EN_PORT, DCDC_5V_EN_PIN, GPIO_PIN_SET);
+            /* DC/DC 5V voltage boost initial capacitor ramp settle (~5 ms at 48 MHz) */
+            for (volatile uint32_t i = 0; i < 60000; i++) { __NOP(); }
+        }
 
         HAL_GPIO_WritePin(FE_CTRL1_PORT, FE_CTRL1_PIN, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(FE_CTRL2_PORT, FE_CTRL2_PIN, GPIO_PIN_SET);

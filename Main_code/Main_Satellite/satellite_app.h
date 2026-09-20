@@ -26,17 +26,23 @@ extern "C" {
 #define SAT_CFG_DEFAULT_SRC_SSID           1
 #define SAT_CFG_DEFAULT_DEST_CALLSIGN      "GROUND"
 #define SAT_CFG_DEFAULT_DEST_SSID          0
-#define SAT_CFG_DEFAULT_TX_POWER_DBM       14                      /* Transmit RF power in dBm (14 dBm into External PA = clean linear output, no brownout) */
+#define SAT_CFG_DEFAULT_TX_POWER_DBM       13                      /* Transmit RF power in dBm (13 dBm into External PA = clean saturated 26.5 dBm output, zero brownout) */
 #define SAT_CFG_DEFAULT_BITRATE_BPS        4800                    /* GMSK Bitrate (4800 bps) */
 #define SAT_CFG_DEFAULT_FDEV_HZ            1200                    /* GMSK Frequency Deviation (+/- 1.2 kHz) */
 #define SAT_CFG_DEFAULT_TX_TIMEOUT_MS      3000                    /* Radio transmission timeout in ms */
 
 /* RF Front-End Switch Selection:
  * - 3.3V External PA for CW (PC2/SO2, hardware-always-on 3.3V rail): RBI_SWITCH_RFO_LP
- * - 5V External PA for GMSK (PA0 5V DC/DC enable + PC3/SI2 PA enable): RBI_SWITCH_RFO_LP5V
+ * - GMSK Mode PA:
+ *     If SAT_CFG_USE_5V_PA_FOR_GMSK==1: RBI_SWITCH_RFO_LP5V (5V External PA PC3 + 5V DC/DC PA0)
+ *     If SAT_CFG_USE_5V_PA_FOR_GMSK==0: RBI_SWITCH_RFO_LP   (3.3V External PA PC2, Safe Bench Mode)
  */
 #define SAT_CFG_DEFAULT_RF_SWITCH          RBI_SWITCH_RFO_LP   /* 3.3V PA for CW (PC2 / SO2) */
+#if (SAT_CFG_USE_5V_PA_FOR_GMSK == 1)
 #define SAT_CFG_DEFAULT_RF_SWITCH_5V       RBI_SWITCH_RFO_LP5V /* 5V PA for GMSK (PA0 + PC3 / SI2) */
+#else
+#define SAT_CFG_DEFAULT_RF_SWITCH_5V       RBI_SWITCH_RFO_LP   /* Safe Bench Mode: 3.3V PA for GMSK */
+#endif
 
 /* CPU2 (Cortex-M0+) Vector Table Base Address in Flash */
 #define SATELLITE_CPU2_VECTOR_TABLE_ADDR   0x08032000UL

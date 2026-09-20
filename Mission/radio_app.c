@@ -253,8 +253,8 @@ void RadioApp_Send(
     modParams.Params.Gfsk.Bandwidth = SUBGRF_GetFskBandwidthRegValue(RADIO_RX_BANDWIDTH_HZ);
     SUBGRF_SetModulationParams(&modParams);
 
-    /* 5. Set PA power and 200us ramp time */
-    SUBGRF_SetTxParams(s_radio_pa_select, s_radio_tx_power_dbm, RADIO_RAMP_200_US);
+    /* 5. Set PA power and smooth 800us ramp time (prevents sharp current transient / BOR reset) */
+    SUBGRF_SetTxParams(s_radio_pa_select, s_radio_tx_power_dbm, RADIO_RAMP_800_US);
     SUBGRF_WriteRegister(REG_DRV_CTRL, 0x7 << 1);
 
     /* 6. Set RF switch to TX */
@@ -373,9 +373,9 @@ void RadioApp_ForceOpenGfskParams(void)
         &modParams);
 
     /*
-     * Configure PA power and PA Ramp Time (200 us).
+     * Configure PA power and smooth PA Ramp Time (800 us).
      */
-    SUBGRF_SetTxParams(s_radio_pa_select, s_radio_tx_power_dbm, RADIO_RAMP_200_US);
+    SUBGRF_SetTxParams(s_radio_pa_select, s_radio_tx_power_dbm, RADIO_RAMP_800_US);
     SUBGRF_WriteRegister(REG_DRV_CTRL, 0x7 << 1);
 }
 

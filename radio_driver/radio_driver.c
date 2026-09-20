@@ -631,9 +631,15 @@ void SUBGRF_SetTxParams( uint8_t paSelect, int8_t power, RadioRampTimes_t rampTi
         }
         if (power >= 14)
         {
-            /* ST & Semtech optimal +14 dBm setting: paDutyCycle=0x04, txPwr=0x0E (prevents brownout crash) */
+            /* ST & Semtech optimal +14 dBm setting: paDutyCycle=0x04, txPwr=0x0E */
             SUBGRF_SetPaConfig(0x04, 0x00, 0x01, 0x01);
             power = 0x0E;
+        }
+        else if (power >= 12)
+        {
+            /* Optimal +12 to +13 dBm setting: paDutyCycle=0x03, txPwr=0x0C/0x0D (softer drive, eliminates USB brownouts) */
+            SUBGRF_SetPaConfig(0x03, 0x00, 0x01, 0x01);
+            power = 0x0E - (14 - power);
         }
         else if (power >= 10)
         {

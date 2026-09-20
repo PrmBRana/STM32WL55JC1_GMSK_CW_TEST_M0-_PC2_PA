@@ -45,8 +45,17 @@ extern "C" {
  * GFSK / G3RUH
  * ============================================================
  */
-// Optimal drive power: 14 dBm (clean, linear GMSK output without brownout reset or phase distortion)
-#define RADIO_TX_POWER_DBM             14
+// Optimal drive power: 13 dBm (clean saturated external PA output, soft transient, zero brownout reset)
+#define RADIO_TX_POWER_DBM             13
+
+/*
+ * GMSK External Power Amplifier Selection:
+ *   1: 5V External PA (PC3 / SI2) with 5V DC/DC Boost (PA0) [High Power Flight Mode: ~26.5 dBm]
+ *   0: 3.3V External PA (PC2 / SO2) [Safe Bench / ST-Link USB Mode: ~24.5 dBm, <170 mA]
+ */
+#ifndef SAT_CFG_USE_5V_PA_FOR_GMSK
+#define SAT_CFG_USE_5V_PA_FOR_GMSK     1
+#endif
 
 /*
  * GMSK / G3RUH data rate: 4800 bps (matched to Ground Station).
