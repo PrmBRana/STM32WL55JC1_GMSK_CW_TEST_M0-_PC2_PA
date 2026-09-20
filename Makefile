@@ -256,7 +256,7 @@ STM32_PROG ?= $(shell which STM32_Programmer_CLI 2>/dev/null || ls /home/prem/ST
 flash: $(TARGET).bin
 	@if [ -x "$$(which $(STM32_PROG) 2>/dev/null)" ] || [ -x "$(STM32_PROG)" ]; then \
 	  echo "Flashing $(TARGET).bin to 0x08032000 using STM32_Programmer_CLI..."; \
-	  $(STM32_PROG) -c port=SWD -w $(TARGET).bin 0x08032000 -v -hardRst; \
+	  $(STM32_PROG) -c port=SWD mode=UR -w $(TARGET).bin 0x08032000 -v -hardRst; \
 	else \
 	  echo "Flashing $(TARGET).bin to 0x08032000 using OpenOCD..."; \
 	  openocd \

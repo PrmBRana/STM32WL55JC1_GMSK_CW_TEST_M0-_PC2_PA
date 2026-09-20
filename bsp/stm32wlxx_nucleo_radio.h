@@ -51,6 +51,7 @@ typedef enum
   RADIO_SWITCH_RX     = 1,
   RADIO_SWITCH_RFO_LP = 2,
   RADIO_SWITCH_RFO_HP = 3,
+  RADIO_SWITCH_RFO_LP5V  = 4,
 }BSP_RADIO_Switch_TypeDef;
 
 typedef enum

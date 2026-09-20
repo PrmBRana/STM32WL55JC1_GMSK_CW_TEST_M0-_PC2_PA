@@ -221,45 +221,42 @@ void uart1_init(void)
   RCC_C2APB1SMENR2 |= (1UL << 0);
 
   /*
-   * 5. Start HSI16 (16 MHz) and route to USART1
-   *    HSI16 guarantees EXACT 115200 baud irrespective of PLL or core clocks!
+   * 5. Initialize USART1 (PA9 / PB6 TX, PA10 RX)
+   *    If CPU1 (NuttX) has already initialized USART1, do not smash its configuration.
+   *    If not yet initialized, configure for 48 MHz PCLK2 at 115200 baud (BRR = 417).
    */
-  RCC_CR |= (1UL << 8); /* HSION */
-  while ((RCC_CR & (1UL << 10)) == 0) /* Wait HSIRDY */
+  if ((USART1_CR1 & USART_CR1_UE) == 0)
     {
+      USART1_CR1 = 0;
+      USART1_CR2 = 0;
+      USART1_CR3 = 0;
+      USART1_BRR = 417UL; /* 48,000,000 / 115,200 ≈ 417 */
+      USART1_ICR = 0xFFFFFFFFUL;
+      USART1_CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
+    }
+  else
+    {
+      /* Ensure transmitter and receiver remain active and clear any errors */
+      USART1_ICR = 0xFFFFFFFFUL;
+      USART1_CR1 |= (USART_CR1_TE | USART_CR1_UE);
     }
 
-  /* Set USART1 clock source to HSI16 (CCIPR bits 1:0 = 10b) */
-  RCC_CCIPR = (RCC_CCIPR & ~(3UL << 0)) | (2UL << 0);
-
   /*
-   * 6. Initialize USART1 (PA9 / PB6 TX, PA10 RX)
-   *    Baud = 16000000 / 115200 = 138.888 => 139 (0x8B)
-   */
-  USART1_CR1 = 0;
-  USART1_CR2 = 0;
-  USART1_CR3 = 0;
-  USART1_BRR = 139UL;
-  USART1_ICR = 0xFFFFFFFFUL;
-  USART1_CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
-
-  /*
-   * 7. Initialize LPUART1 (PA2/PA3)
+   * 6. Initialize LPUART1 (PA2/PA3)
    *    If CPU1 (NuttX) has already initialized LPUART1, do not smash its configuration.
+   *    If not yet initialized, configure for 48 MHz SYSCLK at 115200 baud (BRR = 106667).
    */
   if ((LPUART1_CR1 & USART_CR1_UE) == 0)
     {
       LPUART1_CR1 = 0;
-      /* Default LPUART1 BRR for SYSCLK 48MHz (or 4MHz * 256) */
-      uint32_t sysclk = HAL_RCC_GetSysClockFreq();
-      if (sysclk == 0) sysclk = 4000000UL;
-      LPUART1_BRR = (uint32_t)(((uint64_t)sysclk * 256ULL + (115200UL / 2UL)) / 115200UL);
+      LPUART1_BRR = 106667UL; /* (256 * 48,000,000) / 115,200 */
       LPUART1_ICR = 0xFFFFFFFFUL;
       LPUART1_CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
     }
   else
     {
-      LPUART1_CR1 |= USART_CR1_TE;
+      LPUART1_ICR = 0xFFFFFFFFUL;
+      LPUART1_CR1 |= (USART_CR1_TE | USART_CR1_UE);
     }
 }
 
@@ -286,7 +283,7 @@ void uart1_putc(char c)
   if (LPUART1_ISR & 0x1FUL) { LPUART1_ICR = 0x1FUL; }
 
   /* Wait for TXE on USART1 with safe non-hanging timeout */
-  uint32_t timeout_u1 = 10000UL;
+  uint32_t timeout_u1 = 50000UL;
   while (((USART1_ISR & USART_ISR_TXE) == 0) && (timeout_u1 > 0))
     {
       timeout_u1--;
@@ -299,7 +296,7 @@ void uart1_putc(char c)
   /* Dual-emit to LPUART1 (PA2 / Arduino D1) if transmitter is ready */
   if (LPUART1_CR1 & USART_CR1_TE)
     {
-      uint32_t timeout_lpu = 10000UL;
+      uint32_t timeout_lpu = 50000UL;
       while (((LPUART1_ISR & USART_ISR_TXE) == 0) && (timeout_lpu > 0))
         {
           timeout_lpu--;

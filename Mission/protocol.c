@@ -235,17 +235,17 @@ uint16_t Protocol_CreatePacket(
      * ========================================================
      * STEP 1
      *
-     * Build ordinary AX.25 frame.
+     * Build ordinary AX.25 frame into static buffer to prevent stack overflow.
      * ========================================================
      */
 
-    uint8_t clean[AX25_MAX_FRAME_SIZE];
+    static uint8_t s_clean[AX25_MAX_FRAME_SIZE];
 
     uint16_t cleanLen = 0;
 
     if (AX25_BuildFrame(
-            clean,
-            sizeof(clean),
+            s_clean,
+            sizeof(s_clean),
             &cleanLen,
             cfg->destCallsign,
             cfg->destSSID,
@@ -273,18 +273,18 @@ uint16_t Protocol_CreatePacket(
      * ========================================================
      */
 
-    uint8_t hdlcBits[
+    static uint8_t s_hdlcBits[
         RADIO_FIXED_PACKET_LEN * 8U
     ];
 
     memset(
-        hdlcBits,
+        s_hdlcBits,
         0,
-        sizeof(hdlcBits));
+        sizeof(s_hdlcBits));
 
     BitWriter writer =
     {
-        .buffer = hdlcBits,
+        .buffer = s_hdlcBits,
         .capacity =
             RADIO_FIXED_PACKET_LEN * 8U,
         .count = 0
@@ -328,7 +328,7 @@ uint16_t Protocol_CreatePacket(
          i <= dataEnd;
          i++)
     {
-        uint8_t value = clean[i];
+        uint8_t value = s_clean[i];
 
         for (uint8_t b = 0;
              b < 8;
@@ -351,8 +351,8 @@ uint16_t Protocol_CreatePacket(
      * ========================================================
      * FCS
      *
-     * clean[cleanLen-3] = FCS low
-     * clean[cleanLen-2] = FCS high
+     * s_clean[cleanLen-3] = FCS low
+     * s_clean[cleanLen-2] = FCS high
      *
      * Standard AX.25 / HDLC transmits both FCS bytes LSB-first:
      * low byte first (bit 0..7), then high byte (bit 0..7).
@@ -361,10 +361,10 @@ uint16_t Protocol_CreatePacket(
      */
 
     uint8_t fcsLow =
-        clean[cleanLen - 3];
+        s_clean[cleanLen - 3];
 
     uint8_t fcsHigh =
-        clean[cleanLen - 2];
+        s_clean[cleanLen - 2];
 
     for (uint8_t b = 0;
          b < 8;
@@ -443,7 +443,7 @@ uint16_t Protocol_CreatePacket(
      * ========================================================
      */
 
-    uint8_t nrziBits[
+    static uint8_t s_nrziBits[
         RADIO_FIXED_PACKET_LEN * 8U
     ];
 
@@ -454,13 +454,13 @@ uint16_t Protocol_CreatePacket(
          i++)
     {
         uint8_t bit =
-            hdlcBits[i];
+            s_hdlcBits[i];
 
         if (bit == 0)
             nrziState =
                 (uint8_t)!nrziState;
 
-        nrziBits[i] =
+        s_nrziBits[i] =
             nrziState;
     }
 
@@ -474,7 +474,7 @@ uint16_t Protocol_CreatePacket(
      * ========================================================
      */
 
-    uint8_t scrambledBits[
+    static uint8_t s_scrambledBits[
         RADIO_FIXED_PACKET_LEN * 8U
     ];
 
@@ -486,7 +486,7 @@ uint16_t Protocol_CreatePacket(
          i++)
     {
         uint8_t inputBit =
-            nrziBits[i];
+            s_nrziBits[i];
 
         uint8_t feedback =
             ((sr >> G3RUH_POLY_TAP1) ^
@@ -502,7 +502,7 @@ uint16_t Protocol_CreatePacket(
             ((sr << 1) | outputBit) &
             G3RUH_REGISTER_MASK;
 
-        scrambledBits[i] =
+        s_scrambledBits[i] =
             outputBit;
     }
 
@@ -535,7 +535,7 @@ uint16_t Protocol_CreatePacket(
             uint32_t bitIndex =
                 ((uint32_t)byteIndex * 8U) + b;
 
-            if (scrambledBits[bitIndex])
+            if (s_scrambledBits[bitIndex])
             {
                 value |=
                     (uint8_t)(1U << (7U - b));
@@ -637,9 +637,9 @@ bool Protocol_ExtractFrame(
     bool inFrame = false;
 
     /*
-     * Maximum stuffed bit storage.
+     * Maximum stuffed bit storage (static to avoid stack overflow).
      */
-    uint8_t frameBits[
+    static uint8_t s_rx_frameBits[
         AX25_MAX_FRAME_SIZE * 10U
     ];
 
@@ -716,7 +716,7 @@ bool Protocol_ExtractFrame(
                  *     0 111111 0
                  *
                  * The first seven bits of the flag have
-                 * already been appended to frameBits.
+                 * already been appended to s_rx_frameBits.
                  *
                  * Remove those seven bits.
                  */
@@ -728,14 +728,14 @@ bool Protocol_ExtractFrame(
                         uint32_t contentBits =
                             frameBitCount - 7U;
 
-                        uint8_t unstuffed[
+                        static uint8_t s_rx_unstuffed[
                             AX25_MAX_FRAME_SIZE
                         ];
 
                         memset(
-                            unstuffed,
+                            s_rx_unstuffed,
                             0,
-                            sizeof(unstuffed));
+                            sizeof(s_rx_unstuffed));
 
                         uint32_t outBitCount = 0;
 
@@ -754,7 +754,7 @@ bool Protocol_ExtractFrame(
                              k++)
                         {
                             uint8_t bit =
-                                frameBits[k];
+                                s_rx_frameBits[k];
 
                             /*
                              * Stuffed zero.
@@ -774,7 +774,7 @@ bool Protocol_ExtractFrame(
 
                             if (outBitCount >=
                                 ((uint32_t)
-                                 sizeof(unstuffed) *
+                                 sizeof(s_rx_unstuffed) *
                                  8U))
                             {
                                 violation =
@@ -784,7 +784,7 @@ bool Protocol_ExtractFrame(
 
                             if (bit)
                             {
-                                unstuffed[
+                                s_rx_unstuffed[
                                     outBitCount / 8U
                                 ] |=
                                     (uint8_t)(
@@ -827,7 +827,7 @@ bool Protocol_ExtractFrame(
 
                                 memcpy(
                                     &frameOut[1],
-                                    unstuffed,
+                                    s_rx_unstuffed,
                                     byteLen);
 
                                 frameOut[
@@ -883,9 +883,9 @@ bool Protocol_ExtractFrame(
             if (inFrame)
             {
                 if (frameBitCount <
-                    sizeof(frameBits))
+                    sizeof(s_rx_frameBits))
                 {
-                    frameBits[
+                    s_rx_frameBits[
                         frameBitCount++
                     ] = dataBit;
                 }

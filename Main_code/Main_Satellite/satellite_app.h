@@ -26,13 +26,17 @@ extern "C" {
 #define SAT_CFG_DEFAULT_SRC_SSID           1
 #define SAT_CFG_DEFAULT_DEST_CALLSIGN      "GROUND"
 #define SAT_CFG_DEFAULT_DEST_SSID          0
-#define SAT_CFG_DEFAULT_TX_POWER_DBM       14                      /* Transmit RF power in dBm (14 dBm into External PA = ~25 dBm output) */
+#define SAT_CFG_DEFAULT_TX_POWER_DBM       14                      /* Transmit RF power in dBm (14 dBm into External PA = clean linear output, no brownout) */
 #define SAT_CFG_DEFAULT_BITRATE_BPS        4800                    /* GMSK Bitrate (4800 bps) */
 #define SAT_CFG_DEFAULT_FDEV_HZ            1200                    /* GMSK Frequency Deviation (+/- 1.2 kHz) */
 #define SAT_CFG_DEFAULT_TX_TIMEOUT_MS      3000                    /* Radio transmission timeout in ms */
 
-/* RF Front-End Switch Selection: RBI_SWITCH_RFO_LP (Low Power) or RBI_SWITCH_RFO_HP (High Power) */
-#define SAT_CFG_DEFAULT_RF_SWITCH          RBI_SWITCH_RFO_LP
+/* RF Front-End Switch Selection:
+ * - 3.3V External PA for CW (PC2/SO2, hardware-always-on 3.3V rail): RBI_SWITCH_RFO_LP
+ * - 5V External PA for GMSK (PA0 5V DC/DC enable + PC3/SI2 PA enable): RBI_SWITCH_RFO_LP5V
+ */
+#define SAT_CFG_DEFAULT_RF_SWITCH          RBI_SWITCH_RFO_LP   /* 3.3V PA for CW (PC2 / SO2) */
+#define SAT_CFG_DEFAULT_RF_SWITCH_5V       RBI_SWITCH_RFO_LP5V /* 5V PA for GMSK (PA0 + PC3 / SI2) */
 
 /* CPU2 (Cortex-M0+) Vector Table Base Address in Flash */
 #define SATELLITE_CPU2_VECTOR_TABLE_ADDR   0x08032000UL
@@ -48,12 +52,14 @@ extern "C" {
 #define SAT_CFG_DEFAULT_CW_TUNING_MS       2000                    /* Pre-beacon 2-second tuning carrier tone */
 #define SAT_CFG_DEFAULT_CW_POST_DELAY_MS   1000                    /* Delay after tuning carrier tone before Morse */
 #define SAT_CFG_DEFAULT_CW_INTER_STR_MS    1000                    /* Delay gap between callsign and payload message */
-#define SAT_CFG_DEFAULT_CW_REPEAT_INT_MS   2000                    /* Delay gap between repeat beacon sequences */
+#define SAT_CFG_DEFAULT_CW_REPEAT_INT_MS   1500                    /* 1.5s delay gap between repeat beacon sequences */
 
 /* 4. GMSK Burst Configuration & Delays */
 #define SAT_CFG_DEFAULT_GMSK_PAYLOAD       "Namaste everyone, Testing GMSK signal "
 #define SAT_CFG_DEFAULT_GMSK_DURATION_MS   60000                   /* 1-Minute continuous GMSK burst session */
-#define SAT_CFG_DEFAULT_GMSK_INTERVAL_MS   300                     /* 300 ms interval between burst packets */
+#define SAT_CFG_DEFAULT_GMSK_INTERVAL_MS   250                     /* 250 ms: CubeSat optimal safe interval (~102 pkts/min, 57% duty cycle, perfect SDR decode) */
+#define SAT_CFG_DEFAULT_GMSK_TUNING_MS     0                       /* 0 ms: Disabled unmodulated CW tone before GMSK burst */
+#define SAT_CFG_DEFAULT_GMSK_POST_DELAY_MS 0                       /* Guard delay after tuning tone */
 
 /* 5. Mission State & Guard Delays */
 #define SAT_CFG_DEFAULT_CYCLE_GUARD_MS     1000                    /* Guard delay between CW and GMSK */
@@ -67,11 +73,12 @@ extern "C" {
 typedef struct {
     /* 1. Radio Frequency & Profile Parameters */
     RadioConfig_t      radio;                     /* txFrequency, rxFrequency, callsigns, SSID, satellite flag */
-    int8_t             txPowerDbm;                /* Transmit RF power in dBm (e.g. 14 or 22 dBm) */
+    int8_t             txPowerDbm;                /* Transmit RF power in dBm (e.g. 14 or 15 dBm) */
     uint32_t           bitrateBps;                /* GMSK Bitrate in bps (e.g. 4800 or 9600) */
     uint32_t           fdevHz;                    /* Frequency deviation in Hz (e.g. 1200 or 4800) */
     uint32_t           txTimeoutMs;               /* Radio TX timeout in ms (e.g. 3000 ms) */
     RBI_Switch_TypeDef rfSwitchConfig;            /* RF Switch: RBI_SWITCH_RFO_LP or RBI_SWITCH_RFO_HP */
+    RBI_Switch_TypeDef rfSwitchConfig5V;          /* RF Switch: RBI_SWITCH_RFO_LP5V */
 
     /* 2. System Startup Delays */
     uint32_t           uartSettleDelayMs;         /* Settle delay after UART init before logs (e.g. 50 ms) */
@@ -90,6 +97,8 @@ typedef struct {
     const char        *gmskPayloadText;           /* GMSK payload message string */
     uint32_t           gmskDurationMs;            /* Total GMSK burst session duration in ms (e.g. 60000 ms) */
     uint32_t           gmskPacketIntervalMs;      /* Delay between burst packets in ms (e.g. 300 ms) */
+    uint32_t           gmskTuningCarrierDurationMs; /* Duration of pre-burst 5V tuning carrier tone (e.g. 2000 ms) */
+    uint32_t           gmskTuningPostDelayMs;       /* Delay after 5V tuning carrier tone before burst (e.g. 500 ms) */
 
     /* 5. Mission State Guard Delays */
     uint32_t           cycleGuardDelayMs;         /* Guard interval delay between sessions in ms (e.g. 1000 ms) */
@@ -112,6 +121,7 @@ typedef struct {
     .fdevHz                     = SAT_CFG_DEFAULT_FDEV_HZ, \
     .txTimeoutMs                = SAT_CFG_DEFAULT_TX_TIMEOUT_MS, \
     .rfSwitchConfig             = SAT_CFG_DEFAULT_RF_SWITCH, \
+    .rfSwitchConfig5V           = SAT_CFG_DEFAULT_RF_SWITCH_5V, \
     .uartSettleDelayMs          = SAT_CFG_DEFAULT_UART_SETTLE_MS, \
     .cwBeaconCallsign           = SAT_CFG_DEFAULT_CW_CALLSIGN, \
     .cwBeaconMessage            = SAT_CFG_DEFAULT_CW_MESSAGE, \
@@ -124,6 +134,8 @@ typedef struct {
     .gmskPayloadText            = SAT_CFG_DEFAULT_GMSK_PAYLOAD, \
     .gmskDurationMs             = SAT_CFG_DEFAULT_GMSK_DURATION_MS, \
     .gmskPacketIntervalMs       = SAT_CFG_DEFAULT_GMSK_INTERVAL_MS, \
+    .gmskTuningCarrierDurationMs = SAT_CFG_DEFAULT_GMSK_TUNING_MS, \
+    .gmskTuningPostDelayMs       = SAT_CFG_DEFAULT_GMSK_POST_DELAY_MS, \
     .cycleGuardDelayMs          = SAT_CFG_DEFAULT_CYCLE_GUARD_MS, \
     .telemetryIntervalMs        = SAT_CFG_DEFAULT_TELEMETRY_INT_MS, \
 }
@@ -158,6 +170,7 @@ uint32_t Satellite_GetTimeMs(void);
 
 /* 4. High-Level Sessions (Driven by configuration passed from main) */
 void Satellite_Hold_Continuous_Carrier(uint32_t seconds);
+void Satellite_Hold_Continuous_Carrier_5V(uint32_t seconds);
 void Satellite_Run_CW_Session(uint32_t cycle);
 void Satellite_Run_GMSK_Burst_Session(uint32_t cycle);
 void Satellite_Run_Cycle(uint32_t cycle);

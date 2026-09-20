@@ -40,7 +40,7 @@ int main(void) {
      * ------------------------------------------------------------------------
      * 1. Initialize SysTick timer and HAL base.
      * 2. Bring up USART1 debug console (PA9 TX / PA10 RX @ 115200 baud).
-     * 3. Configure RF front-end switches (PC4, PC5) and 3.3V external PA (PC2).
+     * 3. Configure RF switches (PC4, PC5), 3.3V PA (PC2), 5V PA (PC3), 5V DC/DC (PA0).
      * 4. Initialize Sub-GHz radio transceiver (SX1262) and NVIC radio IRQ.
      * 5. Apply mission parameters, callsigns, and frequency configurations.
      * ------------------------------------------------------------------------
@@ -67,35 +67,23 @@ int main(void) {
         cycle++;
 
         /* --------------------------------------------------------------------
-         * MISSION PHASE 1: CW Morse Beacon Session
+         * MISSION PHASE 1: 1-Minute 3.3V CW Morse Beacon Session (PC2 Active)
          * -------------------------------------------------------------------- */
         current_mode = SAT_MODE_CW_BEACON;
         (void)current_mode;
         Satellite_Run_CW_Session(cycle);
 
-        /* Inter-mission guard delay */
+        /* Inter-mission guard delay (1 second) */
         Satellite_DelayMs(cfg->cycleGuardDelayMs);
 
         /* --------------------------------------------------------------------
-         * MISSION PHASE 2: GMSK AX.25 Burst Session
+         * MISSION PHASE 2: 1-Minute 5V GMSK AX.25 Burst Session (PA0 + PC3 Active)
          * -------------------------------------------------------------------- */
         current_mode = SAT_MODE_GMSK_BURST;
         Satellite_Run_GMSK_Burst_Session(cycle);
 
-        /* Inter-mission guard delay */
+        /* Inter-mission guard delay (1 second) */
         Satellite_DelayMs(cfg->cycleGuardDelayMs);
-
-        /* --------------------------------------------------------------------
-         * MISSION PHASE 3: Status Telemetry Packet
-         * -------------------------------------------------------------------- */
-        current_mode = SAT_MODE_STATUS_TELEMETRY;
-        char status_msg[64];
-        snprintf(status_msg, sizeof(status_msg), "[STATUS] Cycle #%lu completed (Total PKT: %lu)",
-                 (unsigned long)cycle, (unsigned long)Satellite_GetTotalPacketsSent());
-        Satellite_Send_AX25_String_Timeout(status_msg, cfg->txTimeoutMs);
-
-        /* Post-telemetry delay interval */
-        Satellite_DelayMs(cfg->telemetryIntervalMs);
     }
 
     return 0;

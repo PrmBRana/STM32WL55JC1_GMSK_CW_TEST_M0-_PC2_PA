@@ -67,8 +67,8 @@ g_vectors:
 /* IRQ0  TZIC */
 .word Default_Handler
 
-/* IRQ1  IPCC_C2_RX_C2_TX */
-.word IPCC_C2_RX_IRQHandler
+/* IRQ1  PVD_PVM */
+.word Default_Handler
 
 
 /* IRQ2 RTC */
@@ -135,8 +135,8 @@ g_vectors:
 .word Default_Handler
 
 
-/* IRQ18 IPCC */
-.word Default_Handler
+/* IRQ18 IPCC_C2_RX_C2_TX */
+.word IPCC_C2_RX_IRQHandler
 
 
 /* IRQ19 HSEM */
@@ -209,6 +209,15 @@ g_vectors:
 
 Reset_Handler:
 
+/* Disable interrupts during early startup */
+cpsid i
+
+/* 1. Point Cortex-M0+ vector table to CPU2 flash at 0x08032000 */
+ldr r0, =0xE000ED08
+ldr r1, =0x08032000
+str r1, [r0]
+dsb
+isb
 
 /* Copy DATA */
 

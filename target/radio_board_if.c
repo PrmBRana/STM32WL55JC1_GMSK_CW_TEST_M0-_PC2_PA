@@ -57,17 +57,26 @@
 /* USER CODE END PFP */
 
 static uint8_t s_pa_enabled = 1U;
+static RBI_Switch_TypeDef s_tx_switch_config = RBI_SWITCH_RFO_LP; /* Default: 3.3V PA */
 
 void RBI_EnablePA(uint8_t enable)
 {
     s_pa_enabled = enable ? 1U : 0U;
-    if (s_pa_enabled)
+
+    if (!s_pa_enabled)
     {
-        HAL_GPIO_WritePin(AMP_3V3_EN_PORT, AMP_3V3_EN_PIN, GPIO_PIN_SET);
-    }
-    else
-    {
-        HAL_GPIO_WritePin(AMP_3V3_EN_PORT, AMP_3V3_EN_PIN, GPIO_PIN_RESET);
+        /* Global PA & 5V DC/DC OFF */
+        HAL_GPIO_WritePin(AMP_3V3_EN_PORT,
+                          AMP_3V3_EN_PIN,
+                          GPIO_PIN_RESET);
+
+        HAL_GPIO_WritePin(AMP_5V_EN_PORT,
+                          AMP_5V_EN_PIN,
+                          GPIO_PIN_RESET);
+
+        HAL_GPIO_WritePin(DCDC_5V_EN_PORT,
+                          DCDC_5V_EN_PIN,
+                          GPIO_PIN_RESET);
     }
 }
 
@@ -76,25 +85,51 @@ uint8_t RBI_IsPAEnabled(void)
     return s_pa_enabled;
 }
 
+void RBI_Enable5VDCDC(uint8_t enable)
+{
+    HAL_GPIO_WritePin(DCDC_5V_EN_PORT,
+                      DCDC_5V_EN_PIN,
+                      enable ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}
+
+void RBI_SetTxSwitchConfig(RBI_Switch_TypeDef config)
+{
+    s_tx_switch_config = config;
+}
+
+RBI_Switch_TypeDef RBI_GetTxSwitchConfig(void)
+{
+    return s_tx_switch_config;
+}
+
 /* Exported functions --------------------------------------------------------*/
 int32_t RBI_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-    /* Enable GPIOC clock in CPU1 & CPU2 domains (Power 4 is ON, PA8 not used) */
+    /* Enable GPIOA and GPIOC clocks in CPU1 & CPU2 domains */
+    __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOC_CLK_ENABLE();
-    RCC->AHB2ENR   |= (1UL << 2);
-    RCC->C2AHB2ENR |= (1UL << 2);
+    RCC->AHB2ENR   |= (RCC_AHB2ENR_GPIOAEN | RCC_AHB2ENR_GPIOCEN);
+    RCC->C2AHB2ENR |= (RCC_C2AHB2ENR_GPIOAEN | RCC_C2AHB2ENR_GPIOCEN);
 
-    /* Configure 3.3V PA Enable (PC2), RF Switch FE_CTRL1 (PC4), RF Switch FE_CTRL2 (PC5) */
-    GPIO_InitStruct.Pin   = AMP_3V3_EN_PIN | FE_CTRL1_PIN | FE_CTRL2_PIN;
+    /* Configure 5V DC/DC Converter Enable (PA0: High = 5V ON, Low = OFF) */
+    GPIO_InitStruct.Pin   = DCDC_5V_EN_PIN;
+    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    HAL_GPIO_Init(DCDC_5V_EN_PORT, &GPIO_InitStruct);
+
+    /* Configure 3.3V PA Enable (PC2), 5V PA Enable (PC3), RF Switch FE_CTRL1 (PC4), RF Switch FE_CTRL2 (PC5) */
+    GPIO_InitStruct.Pin   = AMP_3V3_EN_PIN | AMP_5V_EN_PIN | FE_CTRL1_PIN | FE_CTRL2_PIN;
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull  = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    /* Default: All OFF (Standby: PA disabled, RF Switch unasserted) */
-    HAL_GPIO_WritePin(GPIOC, AMP_3V3_EN_PIN | FE_CTRL1_PIN | FE_CTRL2_PIN, GPIO_PIN_RESET);
+    /* Default: All OFF (PA0=0, PC2=0, PC3=0, PC4=0, PC5=0) */
+    HAL_GPIO_WritePin(DCDC_5V_EN_PORT, DCDC_5V_EN_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOC, AMP_3V3_EN_PIN | AMP_5V_EN_PIN | FE_CTRL1_PIN | FE_CTRL2_PIN, GPIO_PIN_RESET);
 
     return 0;
 }
@@ -102,26 +137,81 @@ int32_t RBI_Init(void)
 int32_t RBI_DeInit(void)
 {
     /* Safe shutdown: deassert all controls */
-    HAL_GPIO_WritePin(GPIOC, AMP_3V3_EN_PIN | FE_CTRL1_PIN | FE_CTRL2_PIN, GPIO_PIN_RESET);
-    HAL_GPIO_DeInit(GPIOC, AMP_3V3_EN_PIN | FE_CTRL1_PIN | FE_CTRL2_PIN);
+    HAL_GPIO_WritePin(DCDC_5V_EN_PORT, DCDC_5V_EN_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_DeInit(DCDC_5V_EN_PORT, DCDC_5V_EN_PIN);
+
+    HAL_GPIO_WritePin(GPIOC, AMP_3V3_EN_PIN | AMP_5V_EN_PIN | FE_CTRL1_PIN | FE_CTRL2_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_DeInit(GPIOC, AMP_3V3_EN_PIN | AMP_5V_EN_PIN | FE_CTRL1_PIN | FE_CTRL2_PIN);
 
     return 0;
 }
 
 int32_t RBI_ConfigRFSwitch(RBI_Switch_TypeDef Config)
 {
-    /* Ensure GPIOC clock is active in CPU2 domain */
-    RCC->C2AHB2ENR |= (1UL << 2);
+    /* Ensure GPIOA and GPIOC clocks are active in CPU2 domain */
+    RCC->C2AHB2ENR |= (RCC_C2AHB2ENR_GPIOAEN | RCC_C2AHB2ENR_GPIOCEN);
+
+    /* If generic TX is requested by SUBGRF_SetSwitch(), route according to active config */
+    if (Config == RBI_SWITCH_RFO_LP || Config == RBI_SWITCH_RFO_HP)
+    {
+        if (s_tx_switch_config == RBI_SWITCH_RFO_LP5V)
+        {
+            Config = RBI_SWITCH_RFO_LP5V;
+        }
+    }
+    else if (Config == RBI_SWITCH_RFO_LP5V)
+    {
+        s_tx_switch_config = RBI_SWITCH_RFO_LP5V;
+    }
 
     switch (Config)
     {
+    case RBI_SWITCH_RFO_LP5V:
+        /*
+         * TRANSMIT MODE (5V PA for GMSK):
+         * 1. Disable 3.3V External PA (PC2 / SO2 = 0) - Prevents dual-PA power overload & brownout
+         * 2. Enable 5V DC/DC Converter (PA0 = 1) - Power rail for 5V PA
+         * 3. DC/DC rail ramp-up settle delay (~5 ms)
+         * 4. RF Switch -> TX Path (FE_CTRL1 = 0, FE_CTRL2 = 1)
+         * 5. Assert 5V External PA (PC3 / SI2 = 1) - 5V power amplifier active
+         * 6. PA bias network & switch settle delay (~1 ms)
+         */
+        HAL_GPIO_WritePin(AMP_3V3_EN_PORT, AMP_3V3_EN_PIN, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(DCDC_5V_EN_PORT, DCDC_5V_EN_PIN, GPIO_PIN_SET);
+
+        /* DC/DC 5V voltage boost ramp settle (~5 ms at 48 MHz) */
+        for (volatile uint32_t i = 0; i < 60000; i++) { __NOP(); }
+
+        HAL_GPIO_WritePin(FE_CTRL1_PORT, FE_CTRL1_PIN, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(FE_CTRL2_PORT, FE_CTRL2_PIN, GPIO_PIN_SET);
+
+        if (s_pa_enabled)
+        {
+            HAL_GPIO_WritePin(AMP_5V_EN_PORT, AMP_5V_EN_PIN, GPIO_PIN_SET);
+        }
+        else
+        {
+            HAL_GPIO_WritePin(AMP_5V_EN_PORT, AMP_5V_EN_PIN, GPIO_PIN_RESET);
+        }
+
+        /* PA bias & RF switch settle delay (~1 ms at 48 MHz) */
+        for (volatile uint32_t i = 0; i < 12000; i++) { __NOP(); }
+        break;
+
     case RBI_SWITCH_RFO_HP:
     case RBI_SWITCH_RFO_LP:
         /*
-         * TRANSMIT MODE:
-         * 1. RF Switch -> TX Path (FE_CTRL1 = 0, FE_CTRL2 = 1)
-         * 2. Assert 3.3V External Power Amplifier Enable (PC2 / SO2 = 1)
+         * TRANSMIT MODE (3.3V PA for CW):
+         * 1. Ensure 5V DC/DC is OFF (PA0 = 0) - ONLY ON while GMSK send
+         * 2. Disable 5V External PA (PC3 / SI2 = 0)
+         * 3. RF Switch -> TX Path (FE_CTRL1 = 0, FE_CTRL2 = 1)
+         * 4. Assert 3.3V External Power Amplifier Enable (PC2 / SO2 = 1)
+         * 5. PA bias network & switch settle delay (~200 us)
          */
+        s_tx_switch_config = RBI_SWITCH_RFO_LP;
+        HAL_GPIO_WritePin(DCDC_5V_EN_PORT, DCDC_5V_EN_PIN, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(AMP_5V_EN_PORT, AMP_5V_EN_PIN, GPIO_PIN_RESET);
+
         HAL_GPIO_WritePin(FE_CTRL1_PORT, FE_CTRL1_PIN, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(FE_CTRL2_PORT, FE_CTRL2_PIN, GPIO_PIN_SET);
 
@@ -134,21 +224,25 @@ int32_t RBI_ConfigRFSwitch(RBI_Switch_TypeDef Config)
             HAL_GPIO_WritePin(AMP_3V3_EN_PORT, AMP_3V3_EN_PIN, GPIO_PIN_RESET);
         }
 
-        /* 3. Settle delay (~200 us) for PA bias network & RF switch to fully stabilize */
+        /* PA bias & RF switch settle delay (~200 us at 48 MHz) */
         for (volatile uint32_t i = 0; i < 2500; i++) { __NOP(); }
         break;
 
     case RBI_SWITCH_RX:
         /*
          * RECEIVE MODE:
-         * 1. Disable 3.3V External PA (PC2 = 0)
-         * 2. RF Switch -> RX Path (FE_CTRL1 = 1, FE_CTRL2 = 0)
+         * 1. Disable 5V DC/DC Converter (PA0 = 0)
+         * 2. Disable 5V External PA (PC3 = 0)
+         * 3. Disable 3.3V External PA (PC2 = 0)
+         * 4. RF Switch -> RX Path (FE_CTRL1 = 1, FE_CTRL2 = 0)
          */
+        HAL_GPIO_WritePin(DCDC_5V_EN_PORT, DCDC_5V_EN_PIN, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(AMP_5V_EN_PORT, AMP_5V_EN_PIN, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(AMP_3V3_EN_PORT, AMP_3V3_EN_PIN, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(FE_CTRL1_PORT, FE_CTRL1_PIN, GPIO_PIN_SET);
         HAL_GPIO_WritePin(FE_CTRL2_PORT, FE_CTRL2_PIN, GPIO_PIN_RESET);
 
-        /* 3. Settle delay (~50 us) */
+        /* Settle delay (~50 us) */
         for (volatile uint32_t i = 0; i < 500; i++) { __NOP(); }
         break;
 
@@ -156,8 +250,10 @@ int32_t RBI_ConfigRFSwitch(RBI_Switch_TypeDef Config)
     default:
         /*
          * STANDBY / OFF:
-         * Deassert 3.3V PA enable and both RF switch control pins
+         * Deassert 5V DC/DC, 5V PA, 3.3V PA, and both RF switch control pins
          */
+        HAL_GPIO_WritePin(DCDC_5V_EN_PORT, DCDC_5V_EN_PIN, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(AMP_5V_EN_PORT, AMP_5V_EN_PIN, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(AMP_3V3_EN_PORT, AMP_3V3_EN_PIN, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(FE_CTRL1_PORT, FE_CTRL1_PIN, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(FE_CTRL2_PORT, FE_CTRL2_PIN, GPIO_PIN_RESET);
@@ -187,7 +283,7 @@ int32_t RBI_GetRFOMaxPowerConfig(RBI_RFOMaxPowerConfig_TypeDef Config)
 {
   if (Config == RBI_RFO_LP_MAXPOWER)
   {
-    return 14; /* 14 dBm: optimal 0x04 duty cycle on SX1262 RFO_LP */
+    return 14; /* 14 dBm: optimal drive for linear GMSK and safe current budget (prevents brownout reset) */
   }
   else
   {

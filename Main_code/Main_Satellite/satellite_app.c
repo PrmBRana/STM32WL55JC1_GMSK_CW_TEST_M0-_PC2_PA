@@ -257,6 +257,17 @@ void Satellite_CW_Prepare(void) {
     if (power > 22) power = 22;
     uint8_t pa_sel = (s_config.rfSwitchConfig == RBI_SWITCH_RFO_HP) ? RFO_HP : RFO_LP;
     Radio.Standby();
+
+    /* Ensure 5V DC/DC (PA0) and 5V PA (PC3) are completely OFF for CW mode */
+    uart1_puts(">>> CW PREPARE: 5V DC/DC & 5V PA OFF, 3.3V PA ON (PC2/SO2)\r\n");
+    RBI_Enable5VDCDC(0);
+    HAL_GPIO_WritePin(GPIOC, AMP_5V_EN_PIN, GPIO_PIN_RESET);
+
+    /* Explicitly configure 3.3V PA (PC2/SO2) for CW mode (3.3V rail is hardware always-on) */
+    RBI_SetTxSwitchConfig(s_config.rfSwitchConfig);
+    Satellite_SetRFSwitch(s_config.rfSwitchConfig);
+    CPU2_Delay_Ms(2); /* Settle delay for 3.3V PA */
+
     SUBGRF_SetStandby(STDBY_RC);
     SUBGRF_SetDioIrqParams(IRQ_RADIO_NONE, IRQ_RADIO_NONE, IRQ_RADIO_NONE, IRQ_RADIO_NONE);
     SUBGRF_ClearIrqStatus(IRQ_RADIO_ALL);
@@ -264,9 +275,6 @@ void Satellite_CW_Prepare(void) {
     SUBGRF_SetRfFrequency(s_config.radio.txFrequency);
     SUBGRF_SetTxParams(pa_sel, power, RADIO_RAMP_40_US);
     SUBGRF_WriteRegister(REG_DRV_CTRL, 0x7 << 1);
-
-    /* Enable 3.3V External PA and RF switch in TX mode once for the CW session */
-    Satellite_SetRFSwitch(s_config.rfSwitchConfig);
     SUBGRF_SetSwitch(pa_sel, RFSWITCH_TX);
 }
 
@@ -282,7 +290,7 @@ void Satellite_CW_CarrierOff(void) {
 void Satellite_CW_Finish(void) {
     SUBGRF_SetStandby(STDBY_RC);
     Radio.Standby();
-    /* Power down 3.3V External PA and RF switch after CW session completes */
+    /* Power down 3.3V External PA, 5V DC/DC, and RF switch after CW session completes */
     Satellite_SetRFSwitch(RBI_SWITCH_OFF);
     SUBGRF_SetDioIrqParams(IRQ_RADIO_NONE, IRQ_RADIO_NONE, IRQ_RADIO_NONE, IRQ_RADIO_NONE);
     SUBGRF_ClearIrqStatus(IRQ_RADIO_ALL);
@@ -316,6 +324,67 @@ void Satellite_Hold_Continuous_Carrier(uint32_t seconds) {
     Satellite_CW_CarrierOff();
     Satellite_CW_Finish();
     uart1_puts(">>> CONTINUOUS CARRIER HOLD COMPLETE <<<\r\n\r\n");
+}
+
+void Satellite_Hold_Continuous_Carrier_5V(uint32_t seconds) {
+    uart1_puts("\r\n============================================================\r\n");
+    uart1_printf(">>> STARTING 5V PA CONTINUOUS CARRIER HOLD (%lu SECONDS) <<<\r\n", (unsigned long)seconds);
+    uart1_printf(" Frequency : %lu.%03lu MHz\r\n",
+                 (unsigned long)(s_config.radio.txFrequency / 1000000UL),
+                 (unsigned long)((s_config.radio.txFrequency % 1000000UL) / 1000UL));
+    uart1_printf(" Power     : +%d dBm (5V External PA PC3 / SI2, Boost PA0 ON)\r\n",
+                 (s_config.txPowerDbm != 0) ? s_config.txPowerDbm : RADIO_TX_POWER_DBM);
+    uart1_puts(" Pure unmodulated CW carrier for Spectrum Analyzer / Power Meter\r\n");
+    uart1_puts(" Eliminates GMSK modulation spreading to verify true 27 dBm saturation\r\n");
+    uart1_puts("============================================================\r\n");
+
+    int8_t power = (s_config.txPowerDbm != 0) ? s_config.txPowerDbm : RADIO_TX_POWER_DBM;
+    uint8_t pa_sel = (s_config.rfSwitchConfig == RBI_SWITCH_RFO_HP) ? RFO_HP : RFO_LP;
+    Radio.Standby();
+
+    /* 1. Ensure 3.3V External PA (PC2) is OFF */
+    HAL_GPIO_WritePin(GPIOC, AMP_3V3_EN_PIN, GPIO_PIN_RESET);
+
+    /* 2. Enable 5V DC/DC Converter (PA0 = 1) */
+    RBI_Enable5VDCDC(1);
+    CPU2_Delay_Ms(10); /* 10 ms soft-start settle delay for 5V boost capacitor charging */
+
+    /* 3. Configure RF switch and assert 5V External PA (PC3 = 1) */
+    RBI_SetTxSwitchConfig(s_config.rfSwitchConfig5V);
+    Satellite_SetRFSwitch(s_config.rfSwitchConfig5V);
+    CPU2_Delay_Ms(2);  /* 2 ms PA bias settle delay */
+
+    SUBGRF_SetStandby(STDBY_RC);
+    SUBGRF_SetDioIrqParams(IRQ_RADIO_NONE, IRQ_RADIO_NONE, IRQ_RADIO_NONE, IRQ_RADIO_NONE);
+    SUBGRF_ClearIrqStatus(IRQ_RADIO_ALL);
+    SUBGRF_SetPacketType(PACKET_TYPE_GFSK);
+    SUBGRF_SetRfFrequency(s_config.radio.txFrequency);
+    SUBGRF_SetTxParams(pa_sel, power, RADIO_RAMP_40_US);
+    SUBGRF_WriteRegister(REG_DRV_CTRL, 0x7 << 1);
+    SUBGRF_SetSwitch(pa_sel, RFSWITCH_TX);
+
+    /* Turn on pure continuous carrier */
+    SUBGRF_SetTxContinuousWave();
+
+    uint32_t start_ms = Get_Time_Ms();
+    uint32_t duration_ms = seconds * 1000;
+    while ((Get_Time_Ms() - start_ms) < duration_ms) {
+        uint32_t elapsed_s = (Get_Time_Ms() - start_ms) / 1000;
+        uart1_printf(" [5V CARRIER ACTIVE] Elapsed: %lu s / %lu s\r\n",
+                     (unsigned long)elapsed_s, (unsigned long)seconds);
+        CPU2_Delay_Ms(1000);
+    }
+
+    /* Cut carrier and put radio in standby */
+    SUBGRF_SetStandby(STDBY_RC);
+    Radio.Standby();
+
+    /* Power down 5V PA PC3, 5V DC/DC PA0, and RF switch */
+    Satellite_SetRFSwitch(RBI_SWITCH_OFF);
+    SUBGRF_SetDioIrqParams(IRQ_RADIO_NONE, IRQ_RADIO_NONE, IRQ_RADIO_NONE, IRQ_RADIO_NONE);
+    SUBGRF_ClearIrqStatus(IRQ_RADIO_ALL);
+
+    uart1_puts(">>> 5V CONTINUOUS CARRIER HOLD COMPLETE <<<\r\n\r\n");
 }
 
 void Satellite_CW_SendChar(char c, uint32_t unit_ms) {
@@ -468,6 +537,7 @@ void Satellite_Init(const SatelliteConfig_t *config) {
 
     /* 2. Initialize USART1 immediately so console is alive */
     uart1_init();
+    uart1_puts("\r\n[CPU2] Cortex-M0+ Active at 0x08032000\r\n");
 
     /* 3. Core architecture & peripheral clock init */
     SystemInit();
@@ -488,8 +558,9 @@ void Satellite_Init(const SatelliteConfig_t *config) {
 
     RBI_Init();
     Satellite_SetRFSwitch(RBI_SWITCH_OFF);
-    uart1_printf("[INIT] 4. RF Front-End Switch & 3.3V PA Configured: %s (Standby: OFF) ... [OK]\r\n",
-                 (s_config.rfSwitchConfig == RBI_SWITCH_RFO_HP) ? "RBI_SWITCH_RFO_HP" : "RBI_SWITCH_RFO_LP");
+    uart1_puts("[INIT] 4. RF Dual-PA & 5V DC/DC Configured (Standby: ALL OFF) ... [OK]\r\n");
+    uart1_puts("       - CW Mode   : 3.3V External PA (PC2/SO2) | 5V DC/DC (PA0): OFF\r\n");
+    uart1_puts("       - GMSK Mode : 5V External PA (PC3/SI2)   | 5V DC/DC (PA0): ENABLED\r\n");
 
     MX_SUBGHZ_Init();
     HAL_NVIC_SetPriority(SUBGHZ_Radio_IRQn, 0, 0);
@@ -555,8 +626,9 @@ void Satellite_Run_CW_Session_Ex(uint32_t cycle,
                  (unsigned long)(s_config.radio.txFrequency / 1000000UL),
                  (unsigned long)((s_config.radio.txFrequency % 1000000UL) / 1000UL),
                  power);
-    uart1_printf(" RF Switch          : %s\r\n",
+    uart1_printf(" RF Switch          : %s (3.3V External PA PC2 / SO2)\r\n",
                  (s_config.rfSwitchConfig == RBI_SWITCH_RFO_HP) ? "RBI_SWITCH_RFO_HP" : "RBI_SWITCH_RFO_LP");
+    uart1_puts(" 5V DC/DC (PA0)     : OFF\r\n");
     uart1_puts(" Modulation         : Continuous Wave (CW / Carrier Keying)\r\n");
     uart1_printf(" Morse Unit         : %lu ms\r\n", (unsigned long)unit_ms);
     uart1_printf(" Session Duration   : %lu Seconds\r\n", (unsigned long)(duration_ms / 1000));
@@ -627,7 +699,19 @@ void Satellite_GMSK_Prepare(void) {
     int8_t power = (s_config.txPowerDbm != 0) ? s_config.txPowerDbm : RADIO_TX_POWER_DBM;
     uint8_t pa_sel = (s_config.rfSwitchConfig == RBI_SWITCH_RFO_HP) ? RFO_HP : RFO_LP;
     Radio.Standby();
-    Satellite_SetRFSwitch(s_config.rfSwitchConfig);
+
+    /* 1. Ensure 3.3V External PA (PC2) is OFF */
+    HAL_GPIO_WritePin(GPIOC, AMP_3V3_EN_PIN, GPIO_PIN_RESET);
+
+    /* 2. Enable 5V DC/DC Converter (PA0 = 1) */
+    RBI_Enable5VDCDC(1);
+    CPU2_Delay_Ms(15); /* 15 ms soft-start settle delay for 5V boost capacitor charging */
+
+    /* 3. Configure RF switch and assert 5V External PA (PC3 = 1) */
+    RBI_SetTxSwitchConfig(s_config.rfSwitchConfig5V);
+    Satellite_SetRFSwitch(s_config.rfSwitchConfig5V);
+    CPU2_Delay_Ms(5);  /* 5 ms PA bias settle delay */
+
     SUBGRF_SetStandby(STDBY_RC);
     SUBGRF_SetPacketType(PACKET_TYPE_GFSK);
     RadioApp_SetTxPower(power);
@@ -639,16 +723,19 @@ bool Satellite_Send_Packet_Timeout(const uint8_t *payload, uint16_t len, uint32_
     if (!payload || len == 0) return false;
     if (timeout_ms == 0) timeout_ms = (s_config.txTimeoutMs > 0) ? s_config.txTimeoutMs : 3000;
 
+    /* First enable 5V DC/DC (PA0) and 5V PA (PC3/SI2) before GMSK transmission */
     Satellite_GMSK_Prepare();
 
     uint16_t frame_size = Protocol_CreatePacket(s_burst_scrambled, payload, len, &s_config.radio);
     if (frame_size == 0) {
         uart1_puts("ERROR: Failed to assemble packet!\r\n");
+        Satellite_SetRFSwitch(RBI_SWITCH_OFF);
         return false;
     }
 
     bool res = Radio_Send_And_Wait(s_burst_scrambled, frame_size, timeout_ms);
     CPU2_Delay_Ms(2); /* Settle guard delay for PA ramp-down before shutting down RF switch & external PA */
+    /* Only on while GMSK send PA0, otherwise OFF */
     Satellite_SetRFSwitch(RBI_SWITCH_OFF);
     return res;
 }
@@ -671,7 +758,15 @@ void Satellite_Run_GMSK_Burst_Session_Ex(uint32_t cycle,
                                         uint32_t duration_ms,
                                         uint32_t interval_ms,
                                         uint32_t timeout_ms) {
-    if (!payload_text) payload_text = "Namaste everyone, Testing GMSK signal ";
+    char safe_base_text[64];
+    if (payload_text != NULL && payload_text[0] >= 0x20 && (uint8_t)payload_text[0] < 0x7F) {
+        strncpy(safe_base_text, payload_text, sizeof(safe_base_text) - 1);
+        safe_base_text[sizeof(safe_base_text) - 1] = '\0';
+    } else {
+        strncpy(safe_base_text, SAT_CFG_DEFAULT_GMSK_PAYLOAD, sizeof(safe_base_text) - 1);
+        safe_base_text[sizeof(safe_base_text) - 1] = '\0';
+    }
+
     if (duration_ms == 0) duration_ms = 60000;
     if (interval_ms == 0) interval_ms = 300;
     if (timeout_ms == 0) timeout_ms = (s_config.txTimeoutMs > 0) ? s_config.txTimeoutMs : 3000;
@@ -685,8 +780,8 @@ void Satellite_Run_GMSK_Burst_Session_Ex(uint32_t cycle,
                  (unsigned long)(s_config.radio.txFrequency / 1000000UL),
                  (unsigned long)((s_config.radio.txFrequency % 1000000UL) / 1000UL),
                  power);
-    uart1_printf(" RF Switch          : %s\r\n",
-                 (s_config.rfSwitchConfig == RBI_SWITCH_RFO_HP) ? "RBI_SWITCH_RFO_HP" : "RBI_SWITCH_RFO_LP");
+    uart1_printf(" RF Switch          : %s (5V External PA PC3 / SI2)\r\n", "RBI_SWITCH_RFO_LP5V");
+    uart1_puts(" 5V DC/DC (PA0)     : ENABLED (Powering 5V External PA)\r\n");
     uart1_puts(" Protocol           : AX.25 UI Frame + G3RUH Scrambler\r\n");
     uart1_printf(" Bitrate            : %lu bps GMSK\r\n", (unsigned long)bitrate);
     uart1_printf(" Session Duration   : %lu Seconds continuous burst\r\n", (unsigned long)(duration_ms / 1000));
@@ -696,13 +791,14 @@ void Satellite_Run_GMSK_Burst_Session_Ex(uint32_t cycle,
                  s_config.radio.sourceCallsign, s_config.radio.sourceSSID);
     uart1_puts("============================================================\r\n");
 
+    /* First enable 5V DC/DC (PA0) and 5V PA (PC3) before GMSK burst session starts */
     Satellite_GMSK_Prepare();
 
     uint16_t raw_len = 0;
 
     /* Assemble raw frame template for verification display */
     char template_payload[96];
-    snprintf(template_payload, sizeof(template_payload), "%s #%lu", payload_text, (unsigned long)(s_total_packets_sent + 1));
+    snprintf(template_payload, sizeof(template_payload), "%s #%lu", safe_base_text, (unsigned long)(s_total_packets_sent + 1));
     AX25_BuildFrame(s_raw_frame, sizeof(s_raw_frame), &raw_len,
                     s_config.radio.destCallsign, s_config.radio.destSSID,
                     s_config.radio.sourceCallsign, s_config.radio.sourceSSID,
@@ -710,6 +806,18 @@ void Satellite_Run_GMSK_Burst_Session_Ex(uint32_t cycle,
 
     if (raw_len > 0) {
         Print_AX25_Fields("GMSK BURST AX.25 PACKET TEMPLATE", s_raw_frame, raw_len);
+    }
+
+    /* Pre-burst unmodulated 5V tuning carrier tone for spectrum analyzer power calibration */
+    if (s_config.gmskTuningCarrierDurationMs > 0) {
+        uart1_printf("[GMSK] Emitting %lu ms 5V tuning carrier tone for power calibration...\r\n",
+                     (unsigned long)s_config.gmskTuningCarrierDurationMs);
+        SUBGRF_SetTxContinuousWave();
+        CPU2_Delay_Ms(s_config.gmskTuningCarrierDurationMs);
+        SUBGRF_SetStandby(STDBY_RC);
+        if (s_config.gmskTuningPostDelayMs > 0) {
+            CPU2_Delay_Ms(s_config.gmskTuningPostDelayMs);
+        }
     }
 
     uart1_printf("[GMSK] Starting burst session (%lu s, interval: %lu ms)...\r\n",
@@ -720,14 +828,20 @@ void Satellite_Run_GMSK_Burst_Session_Ex(uint32_t cycle,
     uint32_t sent_timeout = 0;
     uint32_t pkt_num = 0;
 
-    while ((Get_Time_Ms() - burst_start_time) < duration_ms) {
+    while (1) {
+        uint32_t cur_time = Get_Time_Ms();
+        uint32_t elapsed_ms = (cur_time >= burst_start_time) ? (cur_time - burst_start_time) : 0;
+        if (elapsed_ms >= duration_ms) {
+            break;
+        }
+
         pkt_num++;
         s_total_packets_sent++;
 
         /* Dynamically format payload with increasing packet counter */
         char dynamic_payload[96];
         snprintf(dynamic_payload, sizeof(dynamic_payload), "%s #%lu",
-                 payload_text, (unsigned long)s_total_packets_sent);
+                 safe_base_text, (unsigned long)s_total_packets_sent);
 
         uint16_t frame_size = Protocol_CreatePacket(s_burst_scrambled,
                                                     (const uint8_t *)dynamic_payload,
@@ -741,7 +855,9 @@ void Satellite_Run_GMSK_Burst_Session_Ex(uint32_t cycle,
         bool ok = Radio_Send_And_Wait(s_burst_scrambled, frame_size, timeout_ms);
         if (ok) sent_ok++; else sent_timeout++;
 
-        uint32_t elapsed_s = (Get_Time_Ms() - burst_start_time) / 1000;
+        cur_time = Get_Time_Ms();
+        elapsed_ms = (cur_time >= burst_start_time) ? (cur_time - burst_start_time) : 0;
+        uint32_t elapsed_s = elapsed_ms / 1000;
         uart1_printf(" [GMSK TX #%lu (Total: %lu)] %s | \"%s\" (Elapsed: %lu s / %lu s)\r\n",
                      (unsigned long)pkt_num, (unsigned long)s_total_packets_sent,
                      ok ? "sent OK" : "TIMEOUT", dynamic_payload,
@@ -750,7 +866,10 @@ void Satellite_Run_GMSK_Burst_Session_Ex(uint32_t cycle,
         CPU2_Delay_Ms(interval_ms);
     }
 
+    /* Guard delay: allow final packet PA ramp-down to finish cleanly before RF switch off */
+    CPU2_Delay_Ms(2);
     Radio.Standby();
+    /* Only on while GMSK send PA0, otherwise OFF: Power down 5V PA PC3, 5V DC/DC PA0, and RF switch */
     Satellite_SetRFSwitch(RBI_SWITCH_OFF);
     SUBGRF_SetDioIrqParams(IRQ_RADIO_NONE, IRQ_RADIO_NONE, IRQ_RADIO_NONE, IRQ_RADIO_NONE);
     SUBGRF_ClearIrqStatus(IRQ_RADIO_ALL);

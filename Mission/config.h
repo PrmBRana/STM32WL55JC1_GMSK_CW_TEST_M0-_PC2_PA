@@ -45,7 +45,7 @@ extern "C" {
  * GFSK / G3RUH
  * ============================================================
  */
-//JC1 power 14dbm
+// Optimal drive power: 14 dBm (clean, linear GMSK output without brownout reset or phase distortion)
 #define RADIO_TX_POWER_DBM             14
 
 /*

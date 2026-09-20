@@ -1,3 +1,4 @@
+ENTRY(Reset_Handler)
 
 MEMORY
 {

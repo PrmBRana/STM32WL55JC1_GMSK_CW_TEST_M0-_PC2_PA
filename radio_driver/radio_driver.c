@@ -629,26 +629,27 @@ void SUBGRF_SetTxParams( uint8_t paSelect, int8_t power, RadioRampTimes_t rampTi
         {
           power = max_power;
         }
-        if (max_power == 14)
+        if (power >= 14)
         {
+            /* ST & Semtech optimal +14 dBm setting: paDutyCycle=0x04, txPwr=0x0E (prevents brownout crash) */
             SUBGRF_SetPaConfig(0x04, 0x00, 0x01, 0x01);
-            power = 0x0E - (max_power - power);
+            power = 0x0E;
         }
-        else if (max_power == 10)
+        else if (power >= 10)
+        {
+            SUBGRF_SetPaConfig(0x02, 0x00, 0x01, 0x01);
+            power = 0x0E - (14 - power);
+        }
+        else
         {
             SUBGRF_SetPaConfig(0x01, 0x00, 0x01, 0x01);
-            power = 0x0D - (max_power - power);
-        }
-        else /*default 15dBm*/
-        {
-            SUBGRF_SetPaConfig(0x07, 0x00, 0x01, 0x01);
-            power = 0x0E - (max_power - power);
+            power = 0x0D - (10 - power);
         }
         if (power < -17)
         {
             power = -17;
         }
-        SUBGRF_WriteRegister(REG_OCP, 0x18);   /* current max is 80 mA for the whole device*/
+        SUBGRF_WriteRegister(REG_OCP, 0x18);   /* 60 mA current limit: prevents 3.3V rail collapse & MCU brownout */
     }
     else /* rfo_hp*/
     {

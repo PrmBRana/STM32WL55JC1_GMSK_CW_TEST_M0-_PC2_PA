@@ -143,7 +143,7 @@
 #define VECT_TAB_BASE_ADDRESS   FLASH_BASE      /*!< Vector Table base address field.
                                                      This value must be a multiple of 0x100. */
 #if !defined(VECT_TAB_OFFSET)
-#define VECT_TAB_OFFSET         0x00020000U     /*!< Vector Table base offset field.
+#define VECT_TAB_OFFSET         0x00032000U     /*!< Vector Table base offset field for CPU2 (0x08032000).
                                                      This value must be a multiple of 0x100. */
 #endif /* VECT_TAB_OFFSET */
 

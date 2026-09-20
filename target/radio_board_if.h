@@ -67,9 +67,19 @@ extern "C" {
 #ifndef IS_DCDC_SUPPORTED
 #define IS_DCDC_SUPPORTED                   1U
 #endif
+/* 5V DC/DC Converter Enable Pin (PA0)
+ * HIGH: 5V DC/DC regulator active (powers 5V External PA PC3/SI2)
+ * LOW : 5V DC/DC regulator disabled (OFF during CW, RX, guard periods, standby)
+ */
+#define DCDC_5V_EN_PIN      GPIO_PIN_0    /* PA0: 5V DC/DC Boost Converter Enable */
+#define DCDC_5V_EN_PORT     GPIOA
 
-/* Pin Definitions for Satellite RF Front-End (3.3V PA via PC2/SO2, PC4=FE_CTRL1, PC5=FE_CTRL2)
- * Note: Power rail 4 (3.3V) is permanently ON, so PA8 is not needed or used.
+/* 5V PA Enable Pin (PC3 / SI2) */
+#define AMP_5V_EN_PIN       GPIO_PIN_3    /* PC3: 5V Power Amplifier Enable (SI2 / PA_EN) */
+#define AMP_5V_EN_PORT      GPIOC
+
+/* 3.3V PA Enable Pin (PC2 / SO2)
+ * Note: Power rail 4 (3.3V) is permanently ON in hardware, so no GPIO enable is needed for 3.3V.
  */
 #define AMP_3V3_EN_PIN      GPIO_PIN_2    /* PC2: 3.3V Power Amplifier Enable (SO2 / PA_EN) */
 #define AMP_3V3_EN_PORT     GPIOC
@@ -102,6 +112,7 @@ typedef enum
   RBI_SWITCH_RX     = RADIO_SWITCH_RX,
   RBI_SWITCH_RFO_LP = RADIO_SWITCH_RFO_LP,
   RBI_SWITCH_RFO_HP = RADIO_SWITCH_RFO_HP,
+  RBI_SWITCH_RFO_LP5V  = RADIO_SWITCH_RFO_LP5V,
 } RBI_Switch_TypeDef;
 
 typedef enum
@@ -120,6 +131,7 @@ typedef enum
   RBI_SWITCH_RX     = 1,
   RBI_SWITCH_RFO_LP = 2,
   RBI_SWITCH_RFO_HP = 3,
+  RBI_SWITCH_RFO_LP5V  = 4,
 } RBI_Switch_TypeDef;
 
 typedef enum
@@ -205,9 +217,12 @@ int32_t RBI_IsDCDC(void);
   */
 int32_t RBI_GetRFOMaxPowerConfig(RBI_RFOMaxPowerConfig_TypeDef Config);
 
-/* External PA Enable / Status Control */
-void RBI_EnablePA(uint8_t enable);
-uint8_t RBI_IsPAEnabled(void);
+/* External PA & 5V DC/DC Enable / Status Control */
+void               RBI_EnablePA(uint8_t enable);
+uint8_t            RBI_IsPAEnabled(void);
+void               RBI_Enable5VDCDC(uint8_t enable);
+void               RBI_SetTxSwitchConfig(RBI_Switch_TypeDef config);
+RBI_Switch_TypeDef RBI_GetTxSwitchConfig(void);
 
 /* USER CODE BEGIN EFP */
 

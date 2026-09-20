@@ -7,9 +7,9 @@ Archive member included to satisfy reference by file (symbol)
 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
                               /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o) (__aeabi_idiv0)
 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_ldivmod.o)
-                              uart/uart_debug.o (__aeabi_ldivmod)
+                              core/timer_if.o (__aeabi_ldivmod)
 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_uldivmod.o)
-                              uart/uart_debug.o (__aeabi_uldivmod)
+                              core/timer_if.o (__aeabi_uldivmod)
 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
                               core/timer_if.o (__aeabi_lmul)
 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_fixunssfsi.o)
@@ -521,11 +521,17 @@ Discarded input sections
  .data          0x0000000000000000        0x0 target/radio_board_if.o
  .bss           0x0000000000000000        0x0 target/radio_board_if.o
  .text.RBI_EnablePA
-                0x0000000000000000       0x2c target/radio_board_if.o
+                0x0000000000000000       0x3c target/radio_board_if.o
  .text.RBI_IsPAEnabled
                 0x0000000000000000        0xc target/radio_board_if.o
+ .text.RBI_Enable5VDCDC
+                0x0000000000000000       0x14 target/radio_board_if.o
+ .text.RBI_SetTxSwitchConfig
+                0x0000000000000000        0xc target/radio_board_if.o
+ .text.RBI_GetTxSwitchConfig
+                0x0000000000000000        0xc target/radio_board_if.o
  .text.RBI_DeInit
-                0x0000000000000000       0x20 target/radio_board_if.o
+                0x0000000000000000       0x34 target/radio_board_if.o
  .text          0x0000000000000000        0x0 subghz/subghz.o
  .data          0x0000000000000000        0x0 subghz/subghz.o
  .bss           0x0000000000000000        0x0 subghz/subghz.o
@@ -1027,14 +1033,14 @@ Discarded input sections
                 0x0000000000000000        0x4 bsp/stm32wlxx_nucleo_radio.o
  .text.BSP_RADIO_GetRFOMaxPowerConfig
                 0x0000000000000000       0x10 bsp/stm32wlxx_nucleo_radio.o
- .debug_info    0x0000000000000000      0x9d6 bsp/stm32wlxx_nucleo_radio.o
+ .debug_info    0x0000000000000000      0x9dc bsp/stm32wlxx_nucleo_radio.o
  .debug_abbrev  0x0000000000000000      0x26a bsp/stm32wlxx_nucleo_radio.o
  .debug_loc     0x0000000000000000       0xcd bsp/stm32wlxx_nucleo_radio.o
  .debug_aranges
                 0x0000000000000000       0x48 bsp/stm32wlxx_nucleo_radio.o
  .debug_ranges  0x0000000000000000       0x88 bsp/stm32wlxx_nucleo_radio.o
  .debug_line    0x0000000000000000      0x2e5 bsp/stm32wlxx_nucleo_radio.o
- .debug_str     0x0000000000000000      0x5ed bsp/stm32wlxx_nucleo_radio.o
+ .debug_str     0x0000000000000000      0x603 bsp/stm32wlxx_nucleo_radio.o
  .comment       0x0000000000000000       0x34 bsp/stm32wlxx_nucleo_radio.o
  .debug_frame   0x0000000000000000       0xa0 bsp/stm32wlxx_nucleo_radio.o
  .ARM.attributes
@@ -1389,7 +1395,7 @@ END GROUP
  .isr_vector    0x0000000008032000       0xc0 startup_cm0p.o
                 0x00000000080320c0                . = ALIGN (0x4)
 
-.text           0x00000000080320c0     0x8d28
+.text           0x00000000080320c0     0x8da0
                 0x00000000080320c0                . = ALIGN (0x4)
  *(.text)
  .text          0x00000000080320c0      0x114 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
@@ -1481,692 +1487,693 @@ END GROUP
                 0x0000000008033a18      0x3c8 Main_code/Main_GS/gs_main.o
                 0x0000000008033a18                main
  .text.uart1_init
-                0x0000000008033de0      0x25c uart/uart_debug.o
+                0x0000000008033de0      0x238 uart/uart_debug.o
                 0x0000000008033de0                uart1_init
  .text.uart1_putc
-                0x000000000803403c       0xc0 uart/uart_debug.o
-                0x000000000803403c                uart1_putc
+                0x0000000008034018       0xc0 uart/uart_debug.o
+                0x0000000008034018                uart1_putc
  .text.uart2_init
-                0x00000000080340fc        0x8 uart/uart_debug.o
-                0x00000000080340fc                uart2_init
+                0x00000000080340d8        0x8 uart/uart_debug.o
+                0x00000000080340d8                uart2_init
  .text.uart2_putc
-                0x0000000008034104        0x8 uart/uart_debug.o
-                0x0000000008034104                uart2_putc
+                0x00000000080340e0        0x8 uart/uart_debug.o
+                0x00000000080340e0                uart2_putc
  .text.uart2_puts
-                0x000000000803410c       0x24 uart/uart_debug.o
-                0x000000000803410c                uart2_puts
+                0x00000000080340e8       0x24 uart/uart_debug.o
+                0x00000000080340e8                uart2_puts
  .text.uart2_printf
-                0x0000000008034130       0x50 uart/uart_debug.o
-                0x0000000008034130                uart2_printf
+                0x000000000803410c       0x50 uart/uart_debug.o
+                0x000000000803410c                uart2_printf
  .text.uart2_try_getc
-                0x0000000008034180       0x24 uart/uart_debug.o
-                0x0000000008034180                uart2_try_getc
+                0x000000000803415c       0x24 uart/uart_debug.o
+                0x000000000803415c                uart2_try_getc
  .text.AX25_EncodeAddress
-                0x00000000080341a4       0xbc protocol/ax25/ax25.o
-                0x00000000080341a4                AX25_EncodeAddress
+                0x0000000008034180       0xbc protocol/ax25/ax25.o
+                0x0000000008034180                AX25_EncodeAddress
  .text.AX25_DecodeAddress
-                0x0000000008034260       0x34 protocol/ax25/ax25.o
-                0x0000000008034260                AX25_DecodeAddress
+                0x000000000803423c       0x34 protocol/ax25/ax25.o
+                0x000000000803423c                AX25_DecodeAddress
  .text.AX25_BuildFrame
-                0x0000000008034294      0x138 protocol/ax25/ax25.o
-                0x0000000008034294                AX25_BuildFrame
+                0x0000000008034270      0x138 protocol/ax25/ax25.o
+                0x0000000008034270                AX25_BuildFrame
  .text.AX25_VerifyCRC_Method1
-                0x00000000080343cc       0x4c protocol/ax25/ax25.o
-                0x00000000080343cc                AX25_VerifyCRC_Method1
+                0x00000000080343a8       0x4c protocol/ax25/ax25.o
+                0x00000000080343a8                AX25_VerifyCRC_Method1
  .text.AX25_VerifyCRC_Method2
-                0x0000000008034418       0x90 protocol/ax25/ax25.o
-                0x0000000008034418                AX25_VerifyCRC_Method2
+                0x00000000080343f4       0x90 protocol/ax25/ax25.o
+                0x00000000080343f4                AX25_VerifyCRC_Method2
  .text.PutStuffedBit
-                0x00000000080344a8       0x48 Mission/protocol.o
+                0x0000000008034484       0x48 Mission/protocol.o
  .text.Protocol_CreatePacket
-                0x00000000080344f0      0x2c8 Mission/protocol.o
-                0x00000000080344f0                Protocol_CreatePacket
+                0x00000000080344cc      0x290 Mission/protocol.o
+                0x00000000080344cc                Protocol_CreatePacket
  .text.Protocol_ExtractFrame
-                0x00000000080347b8      0x2a4 Mission/protocol.o
-                0x00000000080347b8                Protocol_ExtractFrame
+                0x000000000803475c      0x230 Mission/protocol.o
+                0x000000000803475c                Protocol_ExtractFrame
  .text.RadioApp_Send
-                0x0000000008034a5c      0x104 Mission/radio_app.o
-                0x0000000008034a5c                RadioApp_Send
+                0x000000000803498c      0x104 Mission/radio_app.o
+                0x000000000803498c                RadioApp_Send
  .text.RadioApp_ForceOpenGfskParams
-                0x0000000008034b60       0x98 Mission/radio_app.o
-                0x0000000008034b60                RadioApp_ForceOpenGfskParams
+                0x0000000008034a90       0x98 Mission/radio_app.o
+                0x0000000008034a90                RadioApp_ForceOpenGfskParams
  .text.RadioApp_Init
-                0x0000000008034bf8      0x124 Mission/radio_app.o
-                0x0000000008034bf8                RadioApp_Init
+                0x0000000008034b28      0x124 Mission/radio_app.o
+                0x0000000008034b28                RadioApp_Init
  .text.RadioApp_StartRx
-                0x0000000008034d1c       0x40 Mission/radio_app.o
-                0x0000000008034d1c                RadioApp_StartRx
+                0x0000000008034c4c       0x40 Mission/radio_app.o
+                0x0000000008034c4c                RadioApp_StartRx
  .text.uart1_direct_puts
-                0x0000000008034d5c       0x28 protocol/stm32wlxx_it.o
+                0x0000000008034c8c       0x28 protocol/stm32wlxx_it.o
  .text.uart1_direct_hex32
-                0x0000000008034d84       0x48 protocol/stm32wlxx_it.o
+                0x0000000008034cb4       0x48 protocol/stm32wlxx_it.o
  .text.SysTick_Handler
-                0x0000000008034dcc       0x14 protocol/stm32wlxx_it.o
-                0x0000000008034dcc                SysTick_Handler
+                0x0000000008034cfc       0x14 protocol/stm32wlxx_it.o
+                0x0000000008034cfc                SysTick_Handler
  .text.SysTick_Init_CPU2
-                0x0000000008034de0       0x20 protocol/stm32wlxx_it.o
-                0x0000000008034de0                SysTick_Init_CPU2
+                0x0000000008034d10       0x20 protocol/stm32wlxx_it.o
+                0x0000000008034d10                SysTick_Init_CPU2
  .text.CPU2_Delay_Ms
-                0x0000000008034e00       0x30 protocol/stm32wlxx_it.o
-                0x0000000008034e00                CPU2_Delay_Ms
+                0x0000000008034d30       0x30 protocol/stm32wlxx_it.o
+                0x0000000008034d30                CPU2_Delay_Ms
  .text.NMI_Handler
-                0x0000000008034e30        0x4 protocol/stm32wlxx_it.o
-                0x0000000008034e30                NMI_Handler
+                0x0000000008034d60        0x4 protocol/stm32wlxx_it.o
+                0x0000000008034d60                NMI_Handler
  .text.HardFault_Handler_C
-                0x0000000008034e34       0xf8 protocol/stm32wlxx_it.o
-                0x0000000008034e34                HardFault_Handler_C
+                0x0000000008034d64       0xf8 protocol/stm32wlxx_it.o
+                0x0000000008034d64                HardFault_Handler_C
  .text.HardFault_Handler
-                0x0000000008034f2c       0x14 protocol/stm32wlxx_it.o
-                0x0000000008034f2c                HardFault_Handler
+                0x0000000008034e5c       0x14 protocol/stm32wlxx_it.o
+                0x0000000008034e5c                HardFault_Handler
  .text.SVC_Handler
-                0x0000000008034f40        0x4 protocol/stm32wlxx_it.o
-                0x0000000008034f40                SVC_Handler
+                0x0000000008034e70        0x4 protocol/stm32wlxx_it.o
+                0x0000000008034e70                SVC_Handler
  .text.PendSV_Handler
-                0x0000000008034f44        0x4 protocol/stm32wlxx_it.o
-                0x0000000008034f44                PendSV_Handler
+                0x0000000008034e74        0x4 protocol/stm32wlxx_it.o
+                0x0000000008034e74                PendSV_Handler
  .text.IPCC_C2_RX_IRQHandler
-                0x0000000008034f48       0x10 protocol/stm32wlxx_it.o
-                0x0000000008034f48                IPCC_C2_RX_IRQHandler
+                0x0000000008034e78       0x10 protocol/stm32wlxx_it.o
+                0x0000000008034e78                IPCC_C2_RX_IRQHandler
  .text.SUBGHZ_Radio_IRQHandler
-                0x0000000008034f58       0x10 protocol/stm32wlxx_it.o
-                0x0000000008034f58                SUBGHZ_Radio_IRQHandler
+                0x0000000008034e88       0x10 protocol/stm32wlxx_it.o
+                0x0000000008034e88                SUBGHZ_Radio_IRQHandler
  .text.UTIL_LPM_SetStopMode
-                0x0000000008034f68       0x2c protocol/stm32_lpm.o
-                0x0000000008034f68                UTIL_LPM_SetStopMode
+                0x0000000008034e98       0x2c protocol/stm32_lpm.o
+                0x0000000008034e98                UTIL_LPM_SetStopMode
  .text.UTIL_MEM_cpy_8
-                0x0000000008034f94       0x18 core/stm32_mem.o
-                0x0000000008034f94                UTIL_MEM_cpy_8
+                0x0000000008034ec4       0x18 core/stm32_mem.o
+                0x0000000008034ec4                UTIL_MEM_cpy_8
  .text.UTIL_MEM_set_8
-                0x0000000008034fac        0xc core/stm32_mem.o
-                0x0000000008034fac                UTIL_MEM_set_8
+                0x0000000008034edc        0xc core/stm32_mem.o
+                0x0000000008034edc                UTIL_MEM_set_8
  .text.SystemInit
-                0x0000000008034fb8        0x4 core/system_stm32wlxx.o
-                0x0000000008034fb8                SystemInit
+                0x0000000008034ee8        0x4 core/system_stm32wlxx.o
+                0x0000000008034ee8                SystemInit
  .text.TIMER_IF_GetTimerContext
-                0x0000000008034fbc        0xc core/timer_if.o
-                0x0000000008034fbc                TIMER_IF_GetTimerContext
+                0x0000000008034eec        0xc core/timer_if.o
+                0x0000000008034eec                TIMER_IF_GetTimerContext
  .text.TIMER_IF_GetMinimumTimeout
-                0x0000000008034fc8        0x4 core/timer_if.o
-                0x0000000008034fc8                TIMER_IF_GetMinimumTimeout
+                0x0000000008034ef8        0x4 core/timer_if.o
+                0x0000000008034ef8                TIMER_IF_GetMinimumTimeout
  .text.TIMER_IF_Convert_ms2Tick
-                0x0000000008034fcc       0x14 core/timer_if.o
-                0x0000000008034fcc                TIMER_IF_Convert_ms2Tick
+                0x0000000008034efc       0x14 core/timer_if.o
+                0x0000000008034efc                TIMER_IF_Convert_ms2Tick
  .text.TIMER_IF_Convert_Tick2ms
-                0x0000000008034fe0       0x18 core/timer_if.o
-                0x0000000008034fe0                TIMER_IF_Convert_Tick2ms
+                0x0000000008034f10       0x18 core/timer_if.o
+                0x0000000008034f10                TIMER_IF_Convert_Tick2ms
  .text.TIMER_IF_SetTimerContext
-                0x0000000008034ff8       0x38 core/timer_if.o
-                0x0000000008034ff8                TIMER_IF_SetTimerContext
+                0x0000000008034f28       0x38 core/timer_if.o
+                0x0000000008034f28                TIMER_IF_SetTimerContext
  .text.TIMER_IF_GetTimerElapsedTime
-                0x0000000008035030       0x40 core/timer_if.o
-                0x0000000008035030                TIMER_IF_GetTimerElapsedTime
+                0x0000000008034f60       0x40 core/timer_if.o
+                0x0000000008034f60                TIMER_IF_GetTimerElapsedTime
  .text.TIMER_IF_GetTimerValue
-                0x0000000008035070       0x28 core/timer_if.o
-                0x0000000008035070                TIMER_IF_GetTimerValue
+                0x0000000008034fa0       0x28 core/timer_if.o
+                0x0000000008034fa0                TIMER_IF_GetTimerValue
  .text.TIMER_IF_StopTimer
-                0x0000000008035098       0x38 core/timer_if.o
-                0x0000000008035098                TIMER_IF_StopTimer
+                0x0000000008034fc8       0x38 core/timer_if.o
+                0x0000000008034fc8                TIMER_IF_StopTimer
  .text.TIMER_IF_StartTimer
-                0x00000000080350d0       0x7c core/timer_if.o
-                0x00000000080350d0                TIMER_IF_StartTimer
+                0x0000000008035000       0x7c core/timer_if.o
+                0x0000000008035000                TIMER_IF_StartTimer
  .text.TIMER_IF_Init
-                0x000000000803514c       0x9c core/timer_if.o
-                0x000000000803514c                TIMER_IF_Init
+                0x000000000803507c       0x9c core/timer_if.o
+                0x000000000803507c                TIMER_IF_Init
  .text.MX_RTC_Init
-                0x00000000080351e8       0x8c core/rtc.o
-                0x00000000080351e8                MX_RTC_Init
+                0x0000000008035118       0x8c core/rtc.o
+                0x0000000008035118                MX_RTC_Init
  .text.HAL_RTC_MspInit
-                0x0000000008035274       0x74 core/rtc.o
-                0x0000000008035274                HAL_RTC_MspInit
+                0x00000000080351a4       0x74 core/rtc.o
+                0x00000000080351a4                HAL_RTC_MspInit
  .text.Error_Handler
-                0x00000000080352e8        0x4 core/error_handler.o
-                0x00000000080352e8                Error_Handler
+                0x0000000008035218        0x4 core/error_handler.o
+                0x0000000008035218                Error_Handler
  .text.TRACE_AllocateBufer
-                0x00000000080352ec       0x64 core/stm32_adv_trace.o
+                0x000000000803521c       0x64 core/stm32_adv_trace.o
  .text.TRACE_Send
-                0x0000000008035350       0xb4 core/stm32_adv_trace.o
+                0x0000000008035280       0xb4 core/stm32_adv_trace.o
  .text.UTIL_ADV_TRACE_COND_FSend
-                0x0000000008035404       0xe8 core/stm32_adv_trace.o
-                0x0000000008035404                UTIL_ADV_TRACE_COND_FSend
+                0x0000000008035334       0xe8 core/stm32_adv_trace.o
+                0x0000000008035334                UTIL_ADV_TRACE_COND_FSend
  .text.tiny_vsnprintf_like
-                0x00000000080354ec      0x3a8 core/stm32_tiny_vsnprintf.o
-                0x00000000080354ec                tiny_vsnprintf_like
+                0x000000000803541c      0x3a8 core/stm32_tiny_vsnprintf.o
+                0x000000000803541c                tiny_vsnprintf_like
  .text.Trace_Init
-                0x0000000008035894        0x4 core/stm32_trace_driver.o
-                0x0000000008035894                Trace_Init
+                0x00000000080357c4        0x4 core/stm32_trace_driver.o
+                0x00000000080357c4                Trace_Init
  .text.Trace_DeInit
-                0x0000000008035898        0x4 core/stm32_trace_driver.o
+                0x00000000080357c8        0x4 core/stm32_trace_driver.o
  .text.Trace_Send
-                0x000000000803589c        0x4 core/stm32_trace_driver.o
+                0x00000000080357cc        0x4 core/stm32_trace_driver.o
  .text.RadioCheckRfFrequency
-                0x00000000080358a0        0x4 radio_driver/radio.o
+                0x00000000080357d0        0x4 radio_driver/radio.o
  .text.RadioTimeOnAir
-                0x00000000080358a4      0x130 radio_driver/radio.o
+                0x00000000080357d4      0x130 radio_driver/radio.o
  .text.RadioOnTxTimeoutIrq
-                0x00000000080359d4       0x24 radio_driver/radio.o
+                0x0000000008035904       0x24 radio_driver/radio.o
  .text.RadioOnRxTimeoutIrq
-                0x00000000080359f8       0x24 radio_driver/radio.o
+                0x0000000008035928       0x24 radio_driver/radio.o
  .text.RadioLrFhssSetCfg
-                0x0000000008035a1c        0x4 radio_driver/radio.o
+                0x000000000803594c        0x4 radio_driver/radio.o
  .text.RadioLrFhssGetTimeOnAirInMs
-                0x0000000008035a20        0x4 radio_driver/radio.o
+                0x0000000008035950        0x4 radio_driver/radio.o
  .text.RadioRead
-                0x0000000008035a24        0x8 radio_driver/radio.o
+                0x0000000008035954        0x8 radio_driver/radio.o
  .text.RadioWrite
-                0x0000000008035a2c        0x8 radio_driver/radio.o
+                0x000000000803595c        0x8 radio_driver/radio.o
  .text.RadioTxCw
-                0x0000000008035a34       0x24 radio_driver/radio.o
+                0x0000000008035964       0x24 radio_driver/radio.o
  .text.RadioSetRxDutyCycle
-                0x0000000008035a58       0x38 radio_driver/radio.o
+                0x0000000008035988       0x38 radio_driver/radio.o
  .text.RadioRxBoosted
-                0x0000000008035a90       0x7c radio_driver/radio.o
+                0x00000000080359c0       0x7c radio_driver/radio.o
  .text.RadioStandby
-                0x0000000008035b0c        0xc radio_driver/radio.o
+                0x0000000008035a3c        0xc radio_driver/radio.o
  .text.RadioGetStatus
-                0x0000000008035b18       0x1c radio_driver/radio.o
+                0x0000000008035a48       0x1c radio_driver/radio.o
  .text.RadioGetWakeupTime
-                0x0000000008035b34        0xc radio_driver/radio.o
+                0x0000000008035a64        0xc radio_driver/radio.o
  .text.RadioReadRegisters
-                0x0000000008035b40        0x8 radio_driver/radio.o
+                0x0000000008035a70        0x8 radio_driver/radio.o
  .text.RadioWriteRegisters
-                0x0000000008035b48        0x8 radio_driver/radio.o
+                0x0000000008035a78        0x8 radio_driver/radio.o
  .text.RadioRssi
-                0x0000000008035b50        0xc radio_driver/radio.o
+                0x0000000008035a80        0xc radio_driver/radio.o
  .text.RadioSetTxContinuousWave
-                0x0000000008035b5c       0x48 radio_driver/radio.o
+                0x0000000008035a8c       0x48 radio_driver/radio.o
  .text.RadioSetChannel
-                0x0000000008035ba4        0x8 radio_driver/radio.o
+                0x0000000008035ad4        0x8 radio_driver/radio.o
  .text.RadioStartCad
-                0x0000000008035bac       0x28 radio_driver/radio.o
- .text.RadioRx  0x0000000008035bd4       0x7c radio_driver/radio.o
+                0x0000000008035adc       0x28 radio_driver/radio.o
+ .text.RadioRx  0x0000000008035b04       0x7c radio_driver/radio.o
  .text.RadioRandom
-                0x0000000008035c50       0x14 radio_driver/radio.o
+                0x0000000008035b80       0x14 radio_driver/radio.o
  .text.RadioSetMaxPayloadLength
-                0x0000000008035c64       0x38 radio_driver/radio.o
+                0x0000000008035b94       0x38 radio_driver/radio.o
  .text.RadioSend
-                0x0000000008035c9c      0x210 radio_driver/radio.o
+                0x0000000008035bcc      0x210 radio_driver/radio.o
  .text.RadioTxPrbs
-                0x0000000008035eac       0x2c radio_driver/radio.o
+                0x0000000008035ddc       0x2c radio_driver/radio.o
  .text.RadioIrqProcess
-                0x0000000008035ed8      0x2f4 radio_driver/radio.o
+                0x0000000008035e08      0x2f4 radio_driver/radio.o
  .text.RadioOnDioIrq
-                0x00000000080361cc       0x14 radio_driver/radio.o
+                0x00000000080360fc       0x14 radio_driver/radio.o
  .text.RadioSleep
-                0x00000000080361e0       0x48 radio_driver/radio.o
+                0x0000000008036110       0x48 radio_driver/radio.o
  .text.RadioInit
-                0x0000000008036228       0xd0 radio_driver/radio.o
+                0x0000000008036158       0xd0 radio_driver/radio.o
  .text.RadioSetPublicNetwork
-                0x00000000080362f8       0x5c radio_driver/radio.o
+                0x0000000008036228       0x5c radio_driver/radio.o
  .text.RadioSetModem
-                0x0000000008036354       0x60 radio_driver/radio.o
+                0x0000000008036284       0x60 radio_driver/radio.o
  .text.RadioSetTxConfig
-                0x00000000080363b4      0x1fc radio_driver/radio.o
+                0x00000000080362e4      0x1fc radio_driver/radio.o
  .text.RadioSetRxGenericConfig
-                0x00000000080365b0      0x268 radio_driver/radio.o
+                0x00000000080364e0      0x268 radio_driver/radio.o
  .text.RadioSetRxConfig
-                0x0000000008036818      0x348 radio_driver/radio.o
+                0x0000000008036748      0x348 radio_driver/radio.o
  .text.RadioIsChannelFree
-                0x0000000008036b60       0xcc radio_driver/radio.o
+                0x0000000008036a90       0xcc radio_driver/radio.o
  .text.RadioSetTxGenericConfig
-                0x0000000008036c2c      0x2d4 radio_driver/radio.o
+                0x0000000008036b5c      0x2d4 radio_driver/radio.o
  .text.SUBGRF_GetOperatingMode
-                0x0000000008036f00        0xc radio_driver/radio_driver.o
-                0x0000000008036f00                SUBGRF_GetOperatingMode
+                0x0000000008036e30        0xc radio_driver/radio_driver.o
+                0x0000000008036e30                SUBGRF_GetOperatingMode
  .text.SUBGRF_SetPayload
-                0x0000000008036f0c       0x20 radio_driver/radio_driver.o
-                0x0000000008036f0c                SUBGRF_SetPayload
+                0x0000000008036e3c       0x20 radio_driver/radio_driver.o
+                0x0000000008036e3c                SUBGRF_SetPayload
  .text.SUBGRF_SendPayload
-                0x0000000008036f2c       0x50 radio_driver/radio_driver.o
-                0x0000000008036f2c                SUBGRF_SendPayload
+                0x0000000008036e5c       0x50 radio_driver/radio_driver.o
+                0x0000000008036e5c                SUBGRF_SendPayload
  .text.SUBGRF_SetSyncWord
-                0x0000000008036f7c       0x24 radio_driver/radio_driver.o
-                0x0000000008036f7c                SUBGRF_SetSyncWord
+                0x0000000008036eac       0x24 radio_driver/radio_driver.o
+                0x0000000008036eac                SUBGRF_SetSyncWord
  .text.SUBGRF_SetCrcPolynomial
-                0x0000000008036fa0       0x3c radio_driver/radio_driver.o
-                0x0000000008036fa0                SUBGRF_SetCrcPolynomial
+                0x0000000008036ed0       0x3c radio_driver/radio_driver.o
+                0x0000000008036ed0                SUBGRF_SetCrcPolynomial
  .text.SUBGRF_SetWhiteningSeed
-                0x0000000008036fdc       0x84 radio_driver/radio_driver.o
-                0x0000000008036fdc                SUBGRF_SetWhiteningSeed
+                0x0000000008036f0c       0x84 radio_driver/radio_driver.o
+                0x0000000008036f0c                SUBGRF_SetWhiteningSeed
  .text.SUBGRF_GetRandom
-                0x0000000008037060      0x138 radio_driver/radio_driver.o
-                0x0000000008037060                SUBGRF_GetRandom
+                0x0000000008036f90      0x138 radio_driver/radio_driver.o
+                0x0000000008036f90                SUBGRF_GetRandom
  .text.SUBGRF_SetSleep
-                0x0000000008037198       0x94 radio_driver/radio_driver.o
-                0x0000000008037198                SUBGRF_SetSleep
+                0x00000000080370c8       0x94 radio_driver/radio_driver.o
+                0x00000000080370c8                SUBGRF_SetSleep
  .text.SUBGRF_SetStandby
-                0x000000000803722c       0x3c radio_driver/radio_driver.o
-                0x000000000803722c                SUBGRF_SetStandby
+                0x000000000803715c       0x3c radio_driver/radio_driver.o
+                0x000000000803715c                SUBGRF_SetStandby
  .text.SUBGRF_SetTx
-                0x0000000008037268       0x38 radio_driver/radio_driver.o
-                0x0000000008037268                SUBGRF_SetTx
+                0x0000000008037198       0x38 radio_driver/radio_driver.o
+                0x0000000008037198                SUBGRF_SetTx
  .text.SUBGRF_SetRx
-                0x00000000080372a0       0x38 radio_driver/radio_driver.o
-                0x00000000080372a0                SUBGRF_SetRx
+                0x00000000080371d0       0x38 radio_driver/radio_driver.o
+                0x00000000080371d0                SUBGRF_SetRx
  .text.SUBGRF_SetRxBoosted
-                0x00000000080372d8       0x5c radio_driver/radio_driver.o
-                0x00000000080372d8                SUBGRF_SetRxBoosted
+                0x0000000008037208       0x5c radio_driver/radio_driver.o
+                0x0000000008037208                SUBGRF_SetRxBoosted
  .text.SUBGRF_SetRxDutyCycle
-                0x0000000008037334       0x40 radio_driver/radio_driver.o
-                0x0000000008037334                SUBGRF_SetRxDutyCycle
+                0x0000000008037264       0x40 radio_driver/radio_driver.o
+                0x0000000008037264                SUBGRF_SetRxDutyCycle
  .text.SUBGRF_SetCad
-                0x0000000008037374       0x28 radio_driver/radio_driver.o
-                0x0000000008037374                SUBGRF_SetCad
+                0x00000000080372a4       0x28 radio_driver/radio_driver.o
+                0x00000000080372a4                SUBGRF_SetCad
  .text.SUBGRF_SetTxContinuousWave
-                0x000000000803739c       0x20 radio_driver/radio_driver.o
-                0x000000000803739c                SUBGRF_SetTxContinuousWave
+                0x00000000080372cc       0x20 radio_driver/radio_driver.o
+                0x00000000080372cc                SUBGRF_SetTxContinuousWave
  .text.SUBGRF_SetTxInfinitePreamble
-                0x00000000080373bc       0x20 radio_driver/radio_driver.o
-                0x00000000080373bc                SUBGRF_SetTxInfinitePreamble
+                0x00000000080372ec       0x20 radio_driver/radio_driver.o
+                0x00000000080372ec                SUBGRF_SetTxInfinitePreamble
  .text.SUBGRF_SetStopRxTimerOnPreambleDetect
-                0x00000000080373dc       0x28 radio_driver/radio_driver.o
-                0x00000000080373dc                SUBGRF_SetStopRxTimerOnPreambleDetect
+                0x000000000803730c       0x28 radio_driver/radio_driver.o
+                0x000000000803730c                SUBGRF_SetStopRxTimerOnPreambleDetect
  .text.SUBGRF_SetLoRaSymbNumTimeout
-                0x0000000008037404       0x58 radio_driver/radio_driver.o
-                0x0000000008037404                SUBGRF_SetLoRaSymbNumTimeout
+                0x0000000008037334       0x58 radio_driver/radio_driver.o
+                0x0000000008037334                SUBGRF_SetLoRaSymbNumTimeout
  .text.SUBGRF_SetRegulatorMode
-                0x000000000803745c       0x30 radio_driver/radio_driver.o
-                0x000000000803745c                SUBGRF_SetRegulatorMode
+                0x000000000803738c       0x30 radio_driver/radio_driver.o
+                0x000000000803738c                SUBGRF_SetRegulatorMode
  .text.SUBGRF_Calibrate
-                0x000000000803748c       0x4c radio_driver/radio_driver.o
-                0x000000000803748c                SUBGRF_Calibrate
+                0x00000000080373bc       0x4c radio_driver/radio_driver.o
+                0x00000000080373bc                SUBGRF_Calibrate
  .text.SUBGRF_Init
-                0x00000000080374d8      0x150 radio_driver/radio_driver.o
-                0x00000000080374d8                SUBGRF_Init
+                0x0000000008037408      0x150 radio_driver/radio_driver.o
+                0x0000000008037408                SUBGRF_Init
  .text.SUBGRF_CalibrateImage
-                0x0000000008037628       0x98 radio_driver/radio_driver.o
-                0x0000000008037628                SUBGRF_CalibrateImage
+                0x0000000008037558       0x98 radio_driver/radio_driver.o
+                0x0000000008037558                SUBGRF_CalibrateImage
  .text.SUBGRF_SetDioIrqParams
-                0x00000000080376c0       0x3c radio_driver/radio_driver.o
-                0x00000000080376c0                SUBGRF_SetDioIrqParams
+                0x00000000080375f0       0x3c radio_driver/radio_driver.o
+                0x00000000080375f0                SUBGRF_SetDioIrqParams
  .text.SUBGRF_SetRfFrequency
-                0x00000000080376fc       0x58 radio_driver/radio_driver.o
-                0x00000000080376fc                SUBGRF_SetRfFrequency
+                0x000000000803762c       0x58 radio_driver/radio_driver.o
+                0x000000000803762c                SUBGRF_SetRfFrequency
  .text.SUBGRF_SetPacketType
-                0x0000000008037754       0x58 radio_driver/radio_driver.o
-                0x0000000008037754                SUBGRF_SetPacketType
+                0x0000000008037684       0x58 radio_driver/radio_driver.o
+                0x0000000008037684                SUBGRF_SetPacketType
  .text.SUBGRF_SetTxParams
-                0x00000000080377ac      0x220 radio_driver/radio_driver.o
-                0x00000000080377ac                SUBGRF_SetTxParams
+                0x00000000080376dc      0x22c radio_driver/radio_driver.o
+                0x00000000080376dc                SUBGRF_SetTxParams
  .text.SUBGRF_SetModulationParams
-                0x00000000080379cc      0x13c radio_driver/radio_driver.o
-                0x00000000080379cc                SUBGRF_SetModulationParams
+                0x0000000008037908      0x13c radio_driver/radio_driver.o
+                0x0000000008037908                SUBGRF_SetModulationParams
  .text.SUBGRF_SetPacketParams
-                0x0000000008037b08      0x1c8 radio_driver/radio_driver.o
-                0x0000000008037b08                SUBGRF_SetPacketParams
+                0x0000000008037a44      0x1c8 radio_driver/radio_driver.o
+                0x0000000008037a44                SUBGRF_SetPacketParams
  .text.SUBGRF_SetBufferBaseAddress
-                0x0000000008037cd0       0x28 radio_driver/radio_driver.o
-                0x0000000008037cd0                SUBGRF_SetBufferBaseAddress
+                0x0000000008037c0c       0x28 radio_driver/radio_driver.o
+                0x0000000008037c0c                SUBGRF_SetBufferBaseAddress
  .text.SUBGRF_GetRssiInst
-                0x0000000008037cf8       0x2c radio_driver/radio_driver.o
-                0x0000000008037cf8                SUBGRF_GetRssiInst
+                0x0000000008037c34       0x2c radio_driver/radio_driver.o
+                0x0000000008037c34                SUBGRF_GetRssiInst
  .text.SUBGRF_GetRxBufferStatus
-                0x0000000008037d24       0x78 radio_driver/radio_driver.o
-                0x0000000008037d24                SUBGRF_GetRxBufferStatus
+                0x0000000008037c60       0x78 radio_driver/radio_driver.o
+                0x0000000008037c60                SUBGRF_GetRxBufferStatus
  .text.SUBGRF_GetPayload
-                0x0000000008037d9c       0x44 radio_driver/radio_driver.o
-                0x0000000008037d9c                SUBGRF_GetPayload
+                0x0000000008037cd8       0x44 radio_driver/radio_driver.o
+                0x0000000008037cd8                SUBGRF_GetPayload
  .text.SUBGRF_GetPacketStatus
-                0x0000000008037de0       0x90 radio_driver/radio_driver.o
-                0x0000000008037de0                SUBGRF_GetPacketStatus
+                0x0000000008037d1c       0x90 radio_driver/radio_driver.o
+                0x0000000008037d1c                SUBGRF_GetPacketStatus
  .text.SUBGRF_ClearIrqStatus
-                0x0000000008037e70       0x2c radio_driver/radio_driver.o
-                0x0000000008037e70                SUBGRF_ClearIrqStatus
+                0x0000000008037dac       0x2c radio_driver/radio_driver.o
+                0x0000000008037dac                SUBGRF_ClearIrqStatus
  .text.SUBGRF_WriteRegister
-                0x0000000008037e9c       0x28 radio_driver/radio_driver.o
-                0x0000000008037e9c                SUBGRF_WriteRegister
+                0x0000000008037dd8       0x28 radio_driver/radio_driver.o
+                0x0000000008037dd8                SUBGRF_WriteRegister
  .text.SUBGRF_ReadRegister
-                0x0000000008037ec4       0x28 radio_driver/radio_driver.o
-                0x0000000008037ec4                SUBGRF_ReadRegister
+                0x0000000008037e00       0x28 radio_driver/radio_driver.o
+                0x0000000008037e00                SUBGRF_ReadRegister
  .text.SUBGRF_WriteRegisters
-                0x0000000008037eec       0x20 radio_driver/radio_driver.o
-                0x0000000008037eec                SUBGRF_WriteRegisters
+                0x0000000008037e28       0x20 radio_driver/radio_driver.o
+                0x0000000008037e28                SUBGRF_WriteRegisters
  .text.SUBGRF_ReadRegisters
-                0x0000000008037f0c       0x20 radio_driver/radio_driver.o
-                0x0000000008037f0c                SUBGRF_ReadRegisters
+                0x0000000008037e48       0x20 radio_driver/radio_driver.o
+                0x0000000008037e48                SUBGRF_ReadRegisters
  .text.SUBGRF_SetSwitch
-                0x0000000008037f2c       0x78 radio_driver/radio_driver.o
-                0x0000000008037f2c                SUBGRF_SetSwitch
+                0x0000000008037e68       0x78 radio_driver/radio_driver.o
+                0x0000000008037e68                SUBGRF_SetSwitch
  .text.SUBGRF_SetRfTxPower
-                0x0000000008037fa4       0x30 radio_driver/radio_driver.o
-                0x0000000008037fa4                SUBGRF_SetRfTxPower
+                0x0000000008037ee0       0x30 radio_driver/radio_driver.o
+                0x0000000008037ee0                SUBGRF_SetRfTxPower
  .text.SUBGRF_GetRadioWakeUpTime
-                0x0000000008037fd4        0x4 radio_driver/radio_driver.o
-                0x0000000008037fd4                SUBGRF_GetRadioWakeUpTime
+                0x0000000008037f10        0x4 radio_driver/radio_driver.o
+                0x0000000008037f10                SUBGRF_GetRadioWakeUpTime
  .text.HAL_SUBGHZ_TxCpltCallback
-                0x0000000008037fd8       0x10 radio_driver/radio_driver.o
-                0x0000000008037fd8                HAL_SUBGHZ_TxCpltCallback
+                0x0000000008037f14       0x10 radio_driver/radio_driver.o
+                0x0000000008037f14                HAL_SUBGHZ_TxCpltCallback
  .text.HAL_SUBGHZ_RxCpltCallback
-                0x0000000008037fe8       0x10 radio_driver/radio_driver.o
-                0x0000000008037fe8                HAL_SUBGHZ_RxCpltCallback
+                0x0000000008037f24       0x10 radio_driver/radio_driver.o
+                0x0000000008037f24                HAL_SUBGHZ_RxCpltCallback
  .text.HAL_SUBGHZ_CRCErrorCallback
-                0x0000000008037ff8       0x10 radio_driver/radio_driver.o
-                0x0000000008037ff8                HAL_SUBGHZ_CRCErrorCallback
+                0x0000000008037f34       0x10 radio_driver/radio_driver.o
+                0x0000000008037f34                HAL_SUBGHZ_CRCErrorCallback
  .text.HAL_SUBGHZ_CADStatusCallback
-                0x0000000008038008       0x24 radio_driver/radio_driver.o
-                0x0000000008038008                HAL_SUBGHZ_CADStatusCallback
+                0x0000000008037f44       0x24 radio_driver/radio_driver.o
+                0x0000000008037f44                HAL_SUBGHZ_CADStatusCallback
  .text.HAL_SUBGHZ_RxTxTimeoutCallback
-                0x000000000803802c       0x14 radio_driver/radio_driver.o
-                0x000000000803802c                HAL_SUBGHZ_RxTxTimeoutCallback
+                0x0000000008037f68       0x14 radio_driver/radio_driver.o
+                0x0000000008037f68                HAL_SUBGHZ_RxTxTimeoutCallback
  .text.HAL_SUBGHZ_HeaderErrorCallback
-                0x0000000008038040       0x10 radio_driver/radio_driver.o
-                0x0000000008038040                HAL_SUBGHZ_HeaderErrorCallback
+                0x0000000008037f7c       0x10 radio_driver/radio_driver.o
+                0x0000000008037f7c                HAL_SUBGHZ_HeaderErrorCallback
  .text.HAL_SUBGHZ_PreambleDetectedCallback
-                0x0000000008038050       0x10 radio_driver/radio_driver.o
-                0x0000000008038050                HAL_SUBGHZ_PreambleDetectedCallback
+                0x0000000008037f8c       0x10 radio_driver/radio_driver.o
+                0x0000000008037f8c                HAL_SUBGHZ_PreambleDetectedCallback
  .text.HAL_SUBGHZ_SyncWordValidCallback
-                0x0000000008038060       0x10 radio_driver/radio_driver.o
-                0x0000000008038060                HAL_SUBGHZ_SyncWordValidCallback
+                0x0000000008037f9c       0x10 radio_driver/radio_driver.o
+                0x0000000008037f9c                HAL_SUBGHZ_SyncWordValidCallback
  .text.HAL_SUBGHZ_HeaderValidCallback
-                0x0000000008038070       0x10 radio_driver/radio_driver.o
-                0x0000000008038070                HAL_SUBGHZ_HeaderValidCallback
+                0x0000000008037fac       0x10 radio_driver/radio_driver.o
+                0x0000000008037fac                HAL_SUBGHZ_HeaderValidCallback
  .text.HAL_SUBGHZ_LrFhssHopCallback
-                0x0000000008038080       0x14 radio_driver/radio_driver.o
-                0x0000000008038080                HAL_SUBGHZ_LrFhssHopCallback
+                0x0000000008037fbc       0x14 radio_driver/radio_driver.o
+                0x0000000008037fbc                HAL_SUBGHZ_LrFhssHopCallback
  .text.SUBGRF_GetFskBandwidthRegValue
-                0x0000000008038094       0x38 radio_driver/radio_driver.o
-                0x0000000008038094                SUBGRF_GetFskBandwidthRegValue
+                0x0000000008037fd0       0x38 radio_driver/radio_driver.o
+                0x0000000008037fd0                SUBGRF_GetFskBandwidthRegValue
  .text.SUBGRF_GetCFO
-                0x00000000080380cc       0xd4 radio_driver/radio_driver.o
-                0x00000000080380cc                SUBGRF_GetCFO
+                0x0000000008038008       0xd4 radio_driver/radio_driver.o
+                0x0000000008038008                SUBGRF_GetCFO
  .text.RFW_TransmitLongPacket
-                0x00000000080381a0        0x8 radio_driver/radio_fw.o
-                0x00000000080381a0                RFW_TransmitLongPacket
+                0x00000000080380dc        0x8 radio_driver/radio_fw.o
+                0x00000000080380dc                RFW_TransmitLongPacket
  .text.RFW_ReceiveLongPacket
-                0x00000000080381a8        0x8 radio_driver/radio_fw.o
-                0x00000000080381a8                RFW_ReceiveLongPacket
+                0x00000000080380e4        0x8 radio_driver/radio_fw.o
+                0x00000000080380e4                RFW_ReceiveLongPacket
  .text.RFW_Init
-                0x00000000080381b0        0x8 radio_driver/radio_fw.o
-                0x00000000080381b0                RFW_Init
+                0x00000000080380ec        0x8 radio_driver/radio_fw.o
+                0x00000000080380ec                RFW_Init
  .text.RFW_DeInit
-                0x00000000080381b8        0x4 radio_driver/radio_fw.o
-                0x00000000080381b8                RFW_DeInit
+                0x00000000080380f4        0x4 radio_driver/radio_fw.o
+                0x00000000080380f4                RFW_DeInit
  .text.RFW_Is_Init
-                0x00000000080381bc        0x4 radio_driver/radio_fw.o
-                0x00000000080381bc                RFW_Is_Init
+                0x00000000080380f8        0x4 radio_driver/radio_fw.o
+                0x00000000080380f8                RFW_Is_Init
  .text.RFW_Is_LongPacketModeEnabled
-                0x00000000080381c0        0x4 radio_driver/radio_fw.o
-                0x00000000080381c0                RFW_Is_LongPacketModeEnabled
+                0x00000000080380fc        0x4 radio_driver/radio_fw.o
+                0x00000000080380fc                RFW_Is_LongPacketModeEnabled
  .text.RFW_SetAntSwitch
-                0x00000000080381c4        0x4 radio_driver/radio_fw.o
-                0x00000000080381c4                RFW_SetAntSwitch
+                0x0000000008038100        0x4 radio_driver/radio_fw.o
+                0x0000000008038100                RFW_SetAntSwitch
  .text.RFW_TransmitInit
-                0x00000000080381c8        0x8 radio_driver/radio_fw.o
-                0x00000000080381c8                RFW_TransmitInit
+                0x0000000008038104        0x8 radio_driver/radio_fw.o
+                0x0000000008038104                RFW_TransmitInit
  .text.RFW_ReceiveInit
-                0x00000000080381d0        0x8 radio_driver/radio_fw.o
-                0x00000000080381d0                RFW_ReceiveInit
+                0x000000000803810c        0x8 radio_driver/radio_fw.o
+                0x000000000803810c                RFW_ReceiveInit
  .text.RFW_DeInit_TxLongPacket
-                0x00000000080381d8        0x4 radio_driver/radio_fw.o
-                0x00000000080381d8                RFW_DeInit_TxLongPacket
+                0x0000000008038114        0x4 radio_driver/radio_fw.o
+                0x0000000008038114                RFW_DeInit_TxLongPacket
  .text.RFW_ReceivePayload
-                0x00000000080381dc        0x4 radio_driver/radio_fw.o
-                0x00000000080381dc                RFW_ReceivePayload
+                0x0000000008038118        0x4 radio_driver/radio_fw.o
+                0x0000000008038118                RFW_ReceivePayload
  .text.RFW_SetRadioModem
-                0x00000000080381e0        0x4 radio_driver/radio_fw.o
-                0x00000000080381e0                RFW_SetRadioModem
+                0x000000000803811c        0x4 radio_driver/radio_fw.o
+                0x000000000803811c                RFW_SetRadioModem
  .text.UTIL_TIMER_Create
-                0x00000000080381e4       0x40 radio_driver/stm32_timer.o
-                0x00000000080381e4                UTIL_TIMER_Create
+                0x0000000008038120       0x40 radio_driver/stm32_timer.o
+                0x0000000008038120                UTIL_TIMER_Create
  .text.UTIL_TIMER_GetCurrentTime
-                0x0000000008038224       0x14 radio_driver/stm32_timer.o
-                0x0000000008038224                UTIL_TIMER_GetCurrentTime
+                0x0000000008038160       0x14 radio_driver/stm32_timer.o
+                0x0000000008038160                UTIL_TIMER_GetCurrentTime
  .text.UTIL_TIMER_GetElapsedTime
-                0x0000000008038238       0x20 radio_driver/stm32_timer.o
-                0x0000000008038238                UTIL_TIMER_GetElapsedTime
+                0x0000000008038174       0x20 radio_driver/stm32_timer.o
+                0x0000000008038174                UTIL_TIMER_GetElapsedTime
  .text.TimerSetTimeout
-                0x0000000008038258       0x3c radio_driver/stm32_timer.o
-                0x0000000008038258                TimerSetTimeout
+                0x0000000008038194       0x3c radio_driver/stm32_timer.o
+                0x0000000008038194                TimerSetTimeout
  .text.UTIL_TIMER_Stop
-                0x0000000008038294       0x6c radio_driver/stm32_timer.o
-                0x0000000008038294                UTIL_TIMER_Stop
+                0x00000000080381d0       0x6c radio_driver/stm32_timer.o
+                0x00000000080381d0                UTIL_TIMER_Stop
  .text.UTIL_TIMER_Start.part.0
-                0x0000000008038300       0xbc radio_driver/stm32_timer.o
+                0x000000000803823c       0xbc radio_driver/stm32_timer.o
  .text.UTIL_TIMER_Start
-                0x00000000080383bc       0x30 radio_driver/stm32_timer.o
-                0x00000000080383bc                UTIL_TIMER_Start
+                0x00000000080382f8       0x30 radio_driver/stm32_timer.o
+                0x00000000080382f8                UTIL_TIMER_Start
  .text.UTIL_TIMER_SetPeriod
-                0x00000000080383ec       0x64 radio_driver/stm32_timer.o
-                0x00000000080383ec                UTIL_TIMER_SetPeriod
+                0x0000000008038328       0x64 radio_driver/stm32_timer.o
+                0x0000000008038328                UTIL_TIMER_SetPeriod
  .text.UTIL_ADV_TRACE_PreSendHook
-                0x0000000008038450        0xc radio_driver/sys_app.o
-                0x0000000008038450                UTIL_ADV_TRACE_PreSendHook
+                0x000000000803838c        0xc radio_driver/sys_app.o
+                0x000000000803838c                UTIL_ADV_TRACE_PreSendHook
  .text.RBI_Init
-                0x000000000803845c       0x5c target/radio_board_if.o
-                0x000000000803845c                RBI_Init
+                0x0000000008038398       0x8c target/radio_board_if.o
+                0x0000000008038398                RBI_Init
  .text.RBI_ConfigRFSwitch
-                0x00000000080384b8       0xd8 target/radio_board_if.o
-                0x00000000080384b8                RBI_ConfigRFSwitch
+                0x0000000008038424      0x1d0 target/radio_board_if.o
+                0x0000000008038424                RBI_ConfigRFSwitch
  .text.RBI_GetTxConfig
-                0x0000000008038590        0x4 target/radio_board_if.o
-                0x0000000008038590                RBI_GetTxConfig
+                0x00000000080385f4        0x4 target/radio_board_if.o
+                0x00000000080385f4                RBI_GetTxConfig
  .text.RBI_IsTCXO
-                0x0000000008038594        0x4 target/radio_board_if.o
-                0x0000000008038594                RBI_IsTCXO
+                0x00000000080385f8        0x4 target/radio_board_if.o
+                0x00000000080385f8                RBI_IsTCXO
  .text.RBI_IsDCDC
-                0x0000000008038598        0x4 target/radio_board_if.o
-                0x0000000008038598                RBI_IsDCDC
+                0x00000000080385fc        0x4 target/radio_board_if.o
+                0x00000000080385fc                RBI_IsDCDC
  .text.RBI_GetRFOMaxPowerConfig
-                0x000000000803859c       0x10 target/radio_board_if.o
-                0x000000000803859c                RBI_GetRFOMaxPowerConfig
+                0x0000000008038600       0x10 target/radio_board_if.o
+                0x0000000008038600                RBI_GetRFOMaxPowerConfig
  .text.MX_SUBGHZ_Init
-                0x00000000080385ac       0x1c subghz/subghz.o
-                0x00000000080385ac                MX_SUBGHZ_Init
+                0x0000000008038610       0x1c subghz/subghz.o
+                0x0000000008038610                MX_SUBGHZ_Init
  .text.HAL_SUBGHZ_MspInit
-                0x00000000080385c8       0x30 subghz/subghz.o
-                0x00000000080385c8                HAL_SUBGHZ_MspInit
+                0x000000000803862c       0x30 subghz/subghz.o
+                0x000000000803862c                HAL_SUBGHZ_MspInit
  .text.HAL_MspInit
-                0x00000000080385f8        0x4 hal/Src/stm32wlxx_hal.o
-                0x00000000080385f8                HAL_MspInit
+                0x000000000803865c        0x4 hal/Src/stm32wlxx_hal.o
+                0x000000000803865c                HAL_MspInit
  .text.HAL_InitTick
-                0x00000000080385fc       0x50 hal/Src/stm32wlxx_hal.o
-                0x00000000080385fc                HAL_InitTick
+                0x0000000008038660       0x50 hal/Src/stm32wlxx_hal.o
+                0x0000000008038660                HAL_InitTick
  .text.HAL_Init
-                0x000000000803864c       0x24 hal/Src/stm32wlxx_hal.o
-                0x000000000803864c                HAL_Init
+                0x00000000080386b0       0x24 hal/Src/stm32wlxx_hal.o
+                0x00000000080386b0                HAL_Init
  .text.HAL_IncTick
-                0x0000000008038670       0x18 hal/Src/stm32wlxx_hal.o
-                0x0000000008038670                HAL_IncTick
+                0x00000000080386d4       0x18 hal/Src/stm32wlxx_hal.o
+                0x00000000080386d4                HAL_IncTick
  .text.HAL_GetTick
-                0x0000000008038688        0xc hal/Src/stm32wlxx_hal.o
-                0x0000000008038688                HAL_GetTick
+                0x00000000080386ec        0xc hal/Src/stm32wlxx_hal.o
+                0x00000000080386ec                HAL_GetTick
  .text.SUBGHZSPI_Receive.isra.0
-                0x0000000008038694       0x7c hal/Src/stm32wlxx_hal_subghz.o
+                0x00000000080386f8       0x7c hal/Src/stm32wlxx_hal_subghz.o
  .text.SUBGHZSPI_Transmit.isra.0
-                0x0000000008038710       0x78 hal/Src/stm32wlxx_hal_subghz.o
+                0x0000000008038774       0x78 hal/Src/stm32wlxx_hal_subghz.o
  .text.HAL_SUBGHZ_Init
-                0x0000000008038788      0x120 hal/Src/stm32wlxx_hal_subghz.o
-                0x0000000008038788                HAL_SUBGHZ_Init
+                0x00000000080387ec      0x120 hal/Src/stm32wlxx_hal_subghz.o
+                0x00000000080387ec                HAL_SUBGHZ_Init
  .text.HAL_SUBGHZ_WriteRegisters
-                0x00000000080388a8      0x164 hal/Src/stm32wlxx_hal_subghz.o
-                0x00000000080388a8                HAL_SUBGHZ_WriteRegisters
+                0x000000000803890c      0x164 hal/Src/stm32wlxx_hal_subghz.o
+                0x000000000803890c                HAL_SUBGHZ_WriteRegisters
  .text.HAL_SUBGHZ_ReadRegisters
-                0x0000000008038a0c      0x160 hal/Src/stm32wlxx_hal_subghz.o
-                0x0000000008038a0c                HAL_SUBGHZ_ReadRegisters
+                0x0000000008038a70      0x160 hal/Src/stm32wlxx_hal_subghz.o
+                0x0000000008038a70                HAL_SUBGHZ_ReadRegisters
  .text.HAL_SUBGHZ_ExecSetCmd
-                0x0000000008038b6c      0x160 hal/Src/stm32wlxx_hal_subghz.o
-                0x0000000008038b6c                HAL_SUBGHZ_ExecSetCmd
+                0x0000000008038bd0      0x160 hal/Src/stm32wlxx_hal_subghz.o
+                0x0000000008038bd0                HAL_SUBGHZ_ExecSetCmd
  .text.HAL_SUBGHZ_ExecGetCmd
-                0x0000000008038ccc      0x158 hal/Src/stm32wlxx_hal_subghz.o
-                0x0000000008038ccc                HAL_SUBGHZ_ExecGetCmd
+                0x0000000008038d30      0x158 hal/Src/stm32wlxx_hal_subghz.o
+                0x0000000008038d30                HAL_SUBGHZ_ExecGetCmd
  .text.HAL_SUBGHZ_WriteBuffer
-                0x0000000008038e24      0x150 hal/Src/stm32wlxx_hal_subghz.o
-                0x0000000008038e24                HAL_SUBGHZ_WriteBuffer
+                0x0000000008038e88      0x150 hal/Src/stm32wlxx_hal_subghz.o
+                0x0000000008038e88                HAL_SUBGHZ_WriteBuffer
  .text.HAL_SUBGHZ_ReadBuffer
-                0x0000000008038f74      0x158 hal/Src/stm32wlxx_hal_subghz.o
-                0x0000000008038f74                HAL_SUBGHZ_ReadBuffer
+                0x0000000008038fd8      0x158 hal/Src/stm32wlxx_hal_subghz.o
+                0x0000000008038fd8                HAL_SUBGHZ_ReadBuffer
  .text.HAL_SUBGHZ_IRQHandler
-                0x00000000080390cc       0xe0 hal/Src/stm32wlxx_hal_subghz.o
-                0x00000000080390cc                HAL_SUBGHZ_IRQHandler
+                0x0000000008039130       0xe0 hal/Src/stm32wlxx_hal_subghz.o
+                0x0000000008039130                HAL_SUBGHZ_IRQHandler
  .text.HAL_RTC_SetAlarm_IT
-                0x00000000080391ac      0x1f4 hal/Src/stm32wlxx_hal_rtc.o
-                0x00000000080391ac                HAL_RTC_SetAlarm_IT
+                0x0000000008039210      0x1f4 hal/Src/stm32wlxx_hal_rtc.o
+                0x0000000008039210                HAL_RTC_SetAlarm_IT
  .text.HAL_RTC_DeactivateAlarm
-                0x00000000080393a0       0x7c hal/Src/stm32wlxx_hal_rtc.o
-                0x00000000080393a0                HAL_RTC_DeactivateAlarm
+                0x0000000008039404       0x7c hal/Src/stm32wlxx_hal_rtc.o
+                0x0000000008039404                HAL_RTC_DeactivateAlarm
  .text.RTC_EnterInitMode
-                0x000000000803941c       0x58 hal/Src/stm32wlxx_hal_rtc.o
-                0x000000000803941c                RTC_EnterInitMode
+                0x0000000008039480       0x58 hal/Src/stm32wlxx_hal_rtc.o
+                0x0000000008039480                RTC_EnterInitMode
  .text.RTC_ExitInitMode
-                0x0000000008039474       0x9c hal/Src/stm32wlxx_hal_rtc.o
-                0x0000000008039474                RTC_ExitInitMode
+                0x00000000080394d8       0x9c hal/Src/stm32wlxx_hal_rtc.o
+                0x00000000080394d8                RTC_ExitInitMode
  .text.HAL_RTC_Init
-                0x0000000008039510       0xd0 hal/Src/stm32wlxx_hal_rtc.o
-                0x0000000008039510                HAL_RTC_Init
+                0x0000000008039574       0xd0 hal/Src/stm32wlxx_hal_rtc.o
+                0x0000000008039574                HAL_RTC_Init
  .text.HAL_RTCEx_EnableBypassShadow
-                0x00000000080395e0       0x3c hal/Src/stm32wlxx_hal_rtc_ex.o
-                0x00000000080395e0                HAL_RTCEx_EnableBypassShadow
+                0x0000000008039644       0x3c hal/Src/stm32wlxx_hal_rtc_ex.o
+                0x0000000008039644                HAL_RTCEx_EnableBypassShadow
  .text.HAL_RTCEx_SetSSRU_IT
-                0x000000000803961c       0x4c hal/Src/stm32wlxx_hal_rtc_ex.o
-                0x000000000803961c                HAL_RTCEx_SetSSRU_IT
+                0x0000000008039680       0x4c hal/Src/stm32wlxx_hal_rtc_ex.o
+                0x0000000008039680                HAL_RTCEx_SetSSRU_IT
  .text.HAL_RTCEx_BKUPWrite
-                0x0000000008039668       0x10 hal/Src/stm32wlxx_hal_rtc_ex.o
-                0x0000000008039668                HAL_RTCEx_BKUPWrite
+                0x00000000080396cc       0x10 hal/Src/stm32wlxx_hal_rtc_ex.o
+                0x00000000080396cc                HAL_RTCEx_BKUPWrite
  .text.HAL_RCC_GetSysClockFreq
-                0x0000000008039678      0x104 hal/Src/stm32wlxx_hal_rcc.o
-                0x0000000008039678                HAL_RCC_GetSysClockFreq
+                0x00000000080396dc      0x104 hal/Src/stm32wlxx_hal_rcc.o
+                0x00000000080396dc                HAL_RCC_GetSysClockFreq
  .text.HAL_RCC_GetHCLK2Freq
-                0x000000000803977c       0x24 hal/Src/stm32wlxx_hal_rcc.o
-                0x000000000803977c                HAL_RCC_GetHCLK2Freq
+                0x00000000080397e0       0x24 hal/Src/stm32wlxx_hal_rcc.o
+                0x00000000080397e0                HAL_RCC_GetHCLK2Freq
  .text.HAL_RCCEx_PeriphCLKConfig
-                0x00000000080397a0      0x24c hal/Src/stm32wlxx_hal_rcc_ex.o
-                0x00000000080397a0                HAL_RCCEx_PeriphCLKConfig
+                0x0000000008039804      0x24c hal/Src/stm32wlxx_hal_rcc_ex.o
+                0x0000000008039804                HAL_RCCEx_PeriphCLKConfig
  .text.HAL_GPIO_Init
-                0x00000000080399ec      0x1f0 hal/Src/stm32wlxx_hal_gpio.o
-                0x00000000080399ec                HAL_GPIO_Init
+                0x0000000008039a50      0x1f0 hal/Src/stm32wlxx_hal_gpio.o
+                0x0000000008039a50                HAL_GPIO_Init
  .text.HAL_GPIO_WritePin
-                0x0000000008039bdc        0xc hal/Src/stm32wlxx_hal_gpio.o
-                0x0000000008039bdc                HAL_GPIO_WritePin
+                0x0000000008039c40        0xc hal/Src/stm32wlxx_hal_gpio.o
+                0x0000000008039c40                HAL_GPIO_WritePin
  .text.HAL_NVIC_SetPriority
-                0x0000000008039be8       0x64 hal/Src/stm32wlxx_hal_cortex.o
-                0x0000000008039be8                HAL_NVIC_SetPriority
+                0x0000000008039c4c       0x64 hal/Src/stm32wlxx_hal_cortex.o
+                0x0000000008039c4c                HAL_NVIC_SetPriority
  .text.HAL_NVIC_EnableIRQ
-                0x0000000008039c4c       0x18 hal/Src/stm32wlxx_hal_cortex.o
-                0x0000000008039c4c                HAL_NVIC_EnableIRQ
+                0x0000000008039cb0       0x18 hal/Src/stm32wlxx_hal_cortex.o
+                0x0000000008039cb0                HAL_NVIC_EnableIRQ
  .text.HAL_SYSTICK_Config
-                0x0000000008039c64       0x34 hal/Src/stm32wlxx_hal_cortex.o
-                0x0000000008039c64                HAL_SYSTICK_Config
+                0x0000000008039cc8       0x34 hal/Src/stm32wlxx_hal_cortex.o
+                0x0000000008039cc8                HAL_SYSTICK_Config
  .text.HAL_PWR_EnableBkUpAccess
-                0x0000000008039c98       0x14 hal/Src/stm32wlxx_hal_pwr.o
-                0x0000000008039c98                HAL_PWR_EnableBkUpAccess
+                0x0000000008039cfc       0x14 hal/Src/stm32wlxx_hal_pwr.o
+                0x0000000008039cfc                HAL_PWR_EnableBkUpAccess
  .text.Reset_Handler
-                0x0000000008039cac       0x50 startup_cm0p.o
-                0x0000000008039cac                Reset_Handler
+                0x0000000008039d10       0x58 startup_cm0p.o
+                0x0000000008039d10                Reset_Handler
  .text.Default_Handler
-                0x0000000008039cfc        0x2 startup_cm0p.o
-                0x0000000008039cfc                Default_Handler
+                0x0000000008039d68        0x2 startup_cm0p.o
+                0x0000000008039d68                Default_Handler
  *(.rodata)
- *fill*         0x0000000008039cfe        0x2 
- .rodata        0x0000000008039d00       0x10 radio_driver/radio.o
- .rodata        0x0000000008039d10       0x11 radio_driver/radio_driver.o
- *fill*         0x0000000008039d21        0x3 
- .rodata        0x0000000008039d24      0x101 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
-                0x0000000008039d24                _ctype_
- *fill*         0x0000000008039e25        0x3 
- .rodata        0x0000000008039e28       0x84 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ *fill*         0x0000000008039d6a        0x2 
+ .rodata        0x0000000008039d6c        0xc Mission/protocol.o
+ .rodata        0x0000000008039d78       0x10 radio_driver/radio.o
+ .rodata        0x0000000008039d88       0x11 radio_driver/radio_driver.o
+ *fill*         0x0000000008039d99        0x3 
+ .rodata        0x0000000008039d9c      0x101 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
+                0x0000000008039d9c                _ctype_
+ *fill*         0x0000000008039e9d        0x3 
+ .rodata        0x0000000008039ea0       0x84 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
  *(.rodata*)
  .rodata.Process_Received_Frame.str1.4
-                0x0000000008039eac      0x3f2 Main_code/Main_GS/gs_main.o
+                0x0000000008039f24      0x3f2 Main_code/Main_GS/gs_main.o
                                         0x426 (size before relaxing)
- *fill*         0x000000000803a29e        0x2 
+ *fill*         0x000000000803a316        0x2 
  .rodata.main.str1.4
-                0x000000000803a2a0      0x311 Main_code/Main_GS/gs_main.o
+                0x000000000803a318      0x311 Main_code/Main_GS/gs_main.o
                                         0x335 (size before relaxing)
- *fill*         0x000000000803a5b1        0x3 
+ *fill*         0x000000000803a629        0x3 
  .rodata.str1.4
-                0x000000000803a5b4        0x7 Main_code/Main_GS/gs_main.o
- *fill*         0x000000000803a5bb        0x1 
+                0x000000000803a62c        0x7 Main_code/Main_GS/gs_main.o
+ *fill*         0x000000000803a633        0x1 
  .rodata.GroundStationProfile
-                0x000000000803a5bc       0x18 Main_code/Main_GS/gs_main.o
-                0x000000000803a5bc                GroundStationProfile
+                0x000000000803a634       0x18 Main_code/Main_GS/gs_main.o
+                0x000000000803a634                GroundStationProfile
  .rodata.AX25_EncodeAddress.str1.4
-                0x000000000803a5d4        0x7 protocol/ax25/ax25.o
- *fill*         0x000000000803a5db        0x1 
+                0x000000000803a64c        0x7 protocol/ax25/ax25.o
+ *fill*         0x000000000803a653        0x1 
  .rodata.crc16_x25_table
-                0x000000000803a5dc      0x200 protocol/ax25/ax25.o
- .rodata.flagBits.0
-                0x000000000803a7dc        0x8 Mission/protocol.o
+                0x000000000803a654      0x200 protocol/ax25/ax25.o
+ .rodata.flagBits.3
+                0x000000000803a854        0x8 Mission/protocol.o
  .rodata.RadioApp_Send.str1.4
-                0x000000000803a7e4       0x18 Mission/radio_app.o
+                0x000000000803a85c       0x18 Mission/radio_app.o
  .rodata.RadioApp_Init.str1.4
-                0x000000000803a7fc       0x9e Mission/radio_app.o
- *fill*         0x000000000803a89a        0x2 
+                0x000000000803a874       0x9e Mission/radio_app.o
+ *fill*         0x000000000803a912        0x2 
  .rodata.uart1_direct_hex32.str1.4
-                0x000000000803a89c       0x11 protocol/stm32wlxx_it.o
- *fill*         0x000000000803a8ad        0x3 
+                0x000000000803a914       0x11 protocol/stm32wlxx_it.o
+ *fill*         0x000000000803a925        0x3 
  .rodata.HardFault_Handler_C.str1.4
-                0x000000000803a8b0       0x7f protocol/stm32wlxx_it.o
+                0x000000000803a928       0x7f protocol/stm32wlxx_it.o
                                          0x83 (size before relaxing)
- *fill*         0x000000000803a92f        0x1 
+ *fill*         0x000000000803a9a7        0x1 
  .rodata.AHBPrescTable
-                0x000000000803a930       0x40 core/system_stm32wlxx.o
-                0x000000000803a930                AHBPrescTable
+                0x000000000803a9a8       0x40 core/system_stm32wlxx.o
+                0x000000000803a9a8                AHBPrescTable
  .rodata.MSIRangeTable
-                0x000000000803a970       0x40 core/system_stm32wlxx.o
-                0x000000000803a970                MSIRangeTable
+                0x000000000803a9e8       0x40 core/system_stm32wlxx.o
+                0x000000000803a9e8                MSIRangeTable
  .rodata.UTIL_TimerDriver
-                0x000000000803a9b0       0x2c core/timer_if.o
-                0x000000000803a9b0                UTIL_TimerDriver
+                0x000000000803aa28       0x2c core/timer_if.o
+                0x000000000803aa28                UTIL_TimerDriver
  .rodata.tiny_vsnprintf_like.str1.4
-                0x000000000803a9dc       0x55 core/stm32_tiny_vsnprintf.o
- *fill*         0x000000000803aa31        0x3 
+                0x000000000803aa54       0x55 core/stm32_tiny_vsnprintf.o
+ *fill*         0x000000000803aaa9        0x3 
  .rodata.tiny_vsnprintf_like
-                0x000000000803aa34      0x108 core/stm32_tiny_vsnprintf.o
+                0x000000000803aaac      0x108 core/stm32_tiny_vsnprintf.o
  .rodata.UTIL_TraceDriver
-                0x000000000803ab3c       0x10 core/stm32_trace_driver.o
-                0x000000000803ab3c                UTIL_TraceDriver
+                0x000000000803abb4       0x10 core/stm32_trace_driver.o
+                0x000000000803abb4                UTIL_TraceDriver
  .rodata.RadioSend.str1.4
-                0x000000000803ab4c       0x15 radio_driver/radio.o
- *fill*         0x000000000803ab61        0x3 
+                0x000000000803abc4       0x15 radio_driver/radio.o
+ *fill*         0x000000000803abd9        0x3 
  .rodata.RadioSend
-                0x000000000803ab64       0x14 radio_driver/radio.o
+                0x000000000803abdc       0x14 radio_driver/radio.o
  .rodata.RadioIrqProcess.str1.4
-                0x000000000803ab78       0x54 radio_driver/radio.o
+                0x000000000803abf0       0x54 radio_driver/radio.o
  .rodata.RadioIrqProcess
-                0x000000000803abcc       0x84 radio_driver/radio.o
+                0x000000000803ac44       0x84 radio_driver/radio.o
  .rodata.Bandwidths
-                0x000000000803ac50        0x3 radio_driver/radio.o
-                0x000000000803ac50                Bandwidths
- *fill*         0x000000000803ac53        0x1 
+                0x000000000803acc8        0x3 radio_driver/radio.o
+                0x000000000803acc8                Bandwidths
+ *fill*         0x000000000803accb        0x1 
  .rodata.CSWTCH.61
-                0x000000000803ac54       0x2c radio_driver/radio.o
+                0x000000000803accc       0x2c radio_driver/radio.o
  .rodata.CSWTCH.81
-                0x000000000803ac80        0x4 radio_driver/radio.o
- .rodata.Radio  0x000000000803ac84       0x8c radio_driver/radio.o
-                0x000000000803ac84                Radio
+                0x000000000803acf8        0x4 radio_driver/radio.o
+ .rodata.Radio  0x000000000803acfc       0x8c radio_driver/radio.o
+                0x000000000803acfc                Radio
  .rodata.FskBandwidths
-                0x000000000803ad10       0xb0 radio_driver/radio_driver.o
+                0x000000000803ad88       0xb0 radio_driver/radio_driver.o
  .rodata.str1.4
-                0x000000000803adc0       0x13 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
- *fill*         0x000000000803add3        0x1 
+                0x000000000803ae38       0x13 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
+ *fill*         0x000000000803ae4b        0x1 
  .rodata.str1.4
-                0x000000000803add4       0x11 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                0x000000000803ae4c       0x11 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
                                          0x25 (size before relaxing)
-                0x000000000803ade8                . = ALIGN (0x4)
- *fill*         0x000000000803ade5        0x3 
-                0x000000000803ade8                _etext = .
+                0x000000000803ae60                . = ALIGN (0x4)
+ *fill*         0x000000000803ae5d        0x3 
+                0x000000000803ae60                _etext = .
 
-.glue_7         0x000000000803ade8        0x0
- .glue_7        0x000000000803ade8        0x0 linker stubs
+.glue_7         0x000000000803ae60        0x0
+ .glue_7        0x000000000803ae60        0x0 linker stubs
 
-.glue_7t        0x000000000803ade8        0x0
- .glue_7t       0x000000000803ade8        0x0 linker stubs
+.glue_7t        0x000000000803ae60        0x0
+ .glue_7t       0x000000000803ae60        0x0 linker stubs
 
-.vfp11_veneer   0x000000000803ade8        0x0
- .vfp11_veneer  0x000000000803ade8        0x0 linker stubs
+.vfp11_veneer   0x000000000803ae60        0x0
+ .vfp11_veneer  0x000000000803ae60        0x0 linker stubs
 
-.v4_bx          0x000000000803ade8        0x0
- .v4_bx         0x000000000803ade8        0x0 linker stubs
+.v4_bx          0x000000000803ae60        0x0
+ .v4_bx         0x000000000803ae60        0x0 linker stubs
 
-.iplt           0x000000000803ade8        0x0
- .iplt          0x000000000803ade8        0x0 Main_code/Main_GS/gs_main.o
+.iplt           0x000000000803ae60        0x0
+ .iplt          0x000000000803ae60        0x0 Main_code/Main_GS/gs_main.o
 
-.rel.dyn        0x000000000803ade8        0x0
- .rel.iplt      0x000000000803ade8        0x0 Main_code/Main_GS/gs_main.o
+.rel.dyn        0x000000000803ae60        0x0
+ .rel.iplt      0x000000000803ae60        0x0 Main_code/Main_GS/gs_main.o
 
-.ARM.exidx      0x000000000803ade8        0x8
- .ARM.exidx     0x000000000803ade8        0x8 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
+.ARM.exidx      0x000000000803ae60        0x8
+ .ARM.exidx     0x000000000803ae60        0x8 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
 
-.data           0x0000000020009000       0x74 load address 0x000000000803adf0
+.data           0x0000000020009000       0x74 load address 0x000000000803ae68
                 0x0000000020009000                . = ALIGN (0x4)
                 0x0000000020009000                _sdata = .
  *(.data)
@@ -2185,24 +2192,25 @@ END GROUP
                 0x000000002000906c        0x1 radio_driver/radio.o
  .data.s_pa_enabled
                 0x000000002000906d        0x1 target/radio_board_if.o
+ .data.s_tx_switch_config
+                0x000000002000906e        0x1 target/radio_board_if.o
  .data.uwTickFreq
-                0x000000002000906e        0x1 hal/Src/stm32wlxx_hal.o
-                0x000000002000906e                uwTickFreq
- *fill*         0x000000002000906f        0x1 
+                0x000000002000906f        0x1 hal/Src/stm32wlxx_hal.o
+                0x000000002000906f                uwTickFreq
  .data.uwTickPrio
                 0x0000000020009070        0x4 hal/Src/stm32wlxx_hal.o
                 0x0000000020009070                uwTickPrio
                 0x0000000020009074                . = ALIGN (0x4)
                 0x0000000020009074                _edata = .
-                0x000000000803adf0                _sidata = LOADADDR (.data)
+                0x000000000803ae68                _sidata = LOADADDR (.data)
 
-.igot.plt       0x0000000020009074        0x0 load address 0x000000000803ae64
+.igot.plt       0x0000000020009074        0x0 load address 0x000000000803aedc
  .igot.plt      0x0000000020009074        0x0 Main_code/Main_GS/gs_main.o
 
-MB_MEM3         0x0000000020009074      0x200 load address 0x000000000803ae64
+MB_MEM3         0x0000000020009074      0x200 load address 0x000000000803aedc
  MB_MEM3        0x0000000020009074      0x200 core/stm32_adv_trace.o
 
-.bss            0x0000000020009274      0x4d4 load address 0x000000000803b064
+.bss            0x0000000020009274     0x1f14 load address 0x000000000803b0dc
                 0x0000000020009274                . = ALIGN (0x4)
                 0x0000000020009274                _sbss = .
  *(.bss)
@@ -2246,250 +2254,262 @@ MB_MEM3         0x0000000020009074      0x200 load address 0x000000000803ae64
  .bss.tx_busy   0x00000000200093fc        0x1 Main_code/Main_GS/gs_main.o
                 0x00000000200093fc                tx_busy
  *fill*         0x00000000200093fd        0x3 
- .bss.s_config  0x0000000020009400       0x18 Mission/radio_app.o
+ .bss.s_clean.7
+                0x0000000020009400       0xa0 Mission/protocol.o
+ .bss.s_hdlcBits.0
+                0x00000000200094a0      0x640 Mission/protocol.o
+ .bss.s_nrziBits.5
+                0x0000000020009ae0      0x640 Mission/protocol.o
+ .bss.s_rx_frameBits.1
+                0x000000002000a120      0x640 Mission/protocol.o
+ .bss.s_rx_unstuffed.2
+                0x000000002000a760       0xa0 Mission/protocol.o
+ .bss.s_scrambledBits.4
+                0x000000002000a800      0x640 Mission/protocol.o
+ .bss.s_config  0x000000002000ae40       0x18 Mission/radio_app.o
  .bss.s_initialized
-                0x0000000020009418        0x1 Mission/radio_app.o
- *fill*         0x0000000020009419        0x3 
+                0x000000002000ae58        0x1 Mission/radio_app.o
+ *fill*         0x000000002000ae59        0x3 
  .bss.s_radio_events
-                0x000000002000941c       0x1c Mission/radio_app.o
+                0x000000002000ae5c       0x1c Mission/radio_app.o
  .bss.g_system_tick_ms
-                0x0000000020009438        0x4 protocol/stm32wlxx_it.o
-                0x0000000020009438                g_system_tick_ms
+                0x000000002000ae78        0x4 protocol/stm32wlxx_it.o
+                0x000000002000ae78                g_system_tick_ms
  .bss.StopModeDisable
-                0x000000002000943c        0x4 protocol/stm32_lpm.o
+                0x000000002000ae7c        0x4 protocol/stm32_lpm.o
  .bss.RTC_Initialized
-                0x0000000020009440        0x1 core/timer_if.o
- *fill*         0x0000000020009441        0x3 
+                0x000000002000ae80        0x1 core/timer_if.o
+ *fill*         0x000000002000ae81        0x3 
  .bss.RtcTimerContext
-                0x0000000020009444        0x4 core/timer_if.o
- .bss.hrtc      0x0000000020009448       0x38 core/rtc.o
-                0x0000000020009448                hrtc
+                0x000000002000ae84        0x4 core/timer_if.o
+ .bss.hrtc      0x000000002000ae88       0x38 core/rtc.o
+                0x000000002000ae88                hrtc
  .bss.ADV_TRACE_Ctx
-                0x0000000020009480       0x18 core/stm32_adv_trace.o
- .bss.sztmp     0x0000000020009498      0x100 core/stm32_adv_trace.o
+                0x000000002000aec0       0x18 core/stm32_adv_trace.o
+ .bss.sztmp     0x000000002000aed8      0x100 core/stm32_adv_trace.o
  .bss.RadioBuffer
-                0x0000000020009598       0xff radio_driver/radio.o
- *fill*         0x0000000020009697        0x1 
+                0x000000002000afd8       0xff radio_driver/radio.o
+ *fill*         0x000000002000b0d7        0x1 
  .bss.RadioEvents
-                0x0000000020009698        0x4 radio_driver/radio.o
+                0x000000002000b0d8        0x4 radio_driver/radio.o
  .bss.RxTimeoutTimer
-                0x000000002000969c       0x18 radio_driver/radio.o
-                0x000000002000969c                RxTimeoutTimer
- .bss.SubgRf    0x00000000200096b4       0x5c radio_driver/radio.o
-                0x00000000200096b4                SubgRf
+                0x000000002000b0dc       0x18 radio_driver/radio.o
+                0x000000002000b0dc                RxTimeoutTimer
+ .bss.SubgRf    0x000000002000b0f4       0x5c radio_driver/radio.o
+                0x000000002000b0f4                SubgRf
  .bss.TxTimeoutTimer
-                0x0000000020009710       0x18 radio_driver/radio.o
-                0x0000000020009710                TxTimeoutTimer
+                0x000000002000b150       0x18 radio_driver/radio.o
+                0x000000002000b150                TxTimeoutTimer
  .bss.FrequencyError
-                0x0000000020009728        0x4 radio_driver/radio_driver.o
-                0x0000000020009728                FrequencyError
+                0x000000002000b168        0x4 radio_driver/radio_driver.o
+                0x000000002000b168                FrequencyError
  .bss.ImageCalibrated
-                0x000000002000972c        0x1 radio_driver/radio_driver.o
+                0x000000002000b16c        0x1 radio_driver/radio_driver.o
  .bss.LoRaHeaderType
-                0x000000002000972d        0x1 radio_driver/radio_driver.o
+                0x000000002000b16d        0x1 radio_driver/radio_driver.o
  .bss.OperatingMode
-                0x000000002000972e        0x1 radio_driver/radio_driver.o
+                0x000000002000b16e        0x1 radio_driver/radio_driver.o
  .bss.PacketType
-                0x000000002000972f        0x1 radio_driver/radio_driver.o
+                0x000000002000b16f        0x1 radio_driver/radio_driver.o
  .bss.RadioOnDioIrqCb
-                0x0000000020009730        0x4 radio_driver/radio_driver.o
+                0x000000002000b170        0x4 radio_driver/radio_driver.o
  .bss.TimerListHead
-                0x0000000020009734        0x4 radio_driver/stm32_timer.o
- .bss.hsubghz   0x0000000020009738        0xc subghz/subghz.o
-                0x0000000020009738                hsubghz
- .bss.uwTick    0x0000000020009744        0x4 hal/Src/stm32wlxx_hal.o
-                0x0000000020009744                uwTick
+                0x000000002000b174        0x4 radio_driver/stm32_timer.o
+ .bss.hsubghz   0x000000002000b178        0xc subghz/subghz.o
+                0x000000002000b178                hsubghz
+ .bss.uwTick    0x000000002000b184        0x4 hal/Src/stm32wlxx_hal.o
+                0x000000002000b184                uwTick
  *(COMMON)
-                0x0000000020009748                . = ALIGN (0x4)
-                0x0000000020009748                _ebss = .
+                0x000000002000b188                . = ALIGN (0x4)
+                0x000000002000b188                _ebss = .
 
 ._user_heap_stack
-                0x0000000020009748      0x600 load address 0x000000000803b064
-                0x0000000020009748                . = ALIGN (0x8)
-                0x0000000020009748                PROVIDE (end = .)
-                0x0000000020009948                . = (. + _Min_Heap_Size)
- *fill*         0x0000000020009748      0x200 
-                0x0000000020009d48                . = (. + _Min_Stack_Size)
- *fill*         0x0000000020009948      0x400 
-                0x0000000020009d48                . = ALIGN (0x8)
+                0x000000002000b188      0x600 load address 0x000000000803b0dc
+                0x000000002000b188                . = ALIGN (0x8)
+                0x000000002000b188                PROVIDE (end = .)
+                0x000000002000b388                . = (. + _Min_Heap_Size)
+ *fill*         0x000000002000b188      0x200 
+                0x000000002000b788                . = (. + _Min_Stack_Size)
+ *fill*         0x000000002000b388      0x400 
+                0x000000002000b788                . = ALIGN (0x8)
 OUTPUT(gs.elf elf32-littlearm)
 LOAD linker stubs
 
-.debug_info     0x0000000000000000    0x318a8
- .debug_info    0x0000000000000000     0x26ae Main_code/Main_GS/gs_main.o
- .debug_info    0x00000000000026ae      0x573 uart/uart_debug.o
- .debug_info    0x0000000000002c21      0xc95 protocol/ax25/ax25.o
- .debug_info    0x00000000000038b6      0xc5a Mission/protocol.o
- .debug_info    0x0000000000004510     0x1f0b Mission/radio_app.o
- .debug_info    0x000000000000641b      0x94a protocol/stm32wlxx_it.o
- .debug_info    0x0000000000006d65      0x545 protocol/stm32_lpm.o
- .debug_info    0x00000000000072aa      0x23c core/stm32_mem.o
- .debug_info    0x00000000000074e6      0x5a0 core/system_stm32wlxx.o
- .debug_info    0x0000000000007a86     0x15dd core/timer_if.o
- .debug_info    0x0000000000009063      0xd2b core/rtc.o
- .debug_info    0x0000000000009d8e       0xe3 core/error_handler.o
- .debug_info    0x0000000000009e71     0x19c0 core/stm32_adv_trace.o
- .debug_info    0x000000000000b831      0x45e core/stm32_tiny_vsnprintf.o
- .debug_info    0x000000000000bc8f      0x2c5 core/stm32_trace_driver.o
- .debug_info    0x000000000000bf54     0x4f97 radio_driver/radio.o
- .debug_info    0x0000000000010eeb     0x7daa radio_driver/radio_driver.o
- .debug_info    0x0000000000018c95      0xc7c radio_driver/radio_fw.o
- .debug_info    0x0000000000019911     0x1018 radio_driver/stm32_timer.o
- .debug_info    0x000000000001a929      0xf41 radio_driver/sys_app.o
- .debug_info    0x000000000001b86a      0xa0e target/radio_board_if.o
- .debug_info    0x000000000001c278      0x7d9 subghz/subghz.o
- .debug_info    0x000000000001ca51     0x12e0 hal/Src/stm32wlxx_hal.o
- .debug_info    0x000000000001dd31     0x2784 hal/Src/stm32wlxx_hal_subghz.o
- .debug_info    0x00000000000204b5     0x19a4 hal/Src/stm32wlxx_hal_rtc.o
- .debug_info    0x0000000000021e59     0x18d9 hal/Src/stm32wlxx_hal_rtc_ex.o
- .debug_info    0x0000000000023732     0x1fb1 hal/Src/stm32wlxx_hal_rcc.o
- .debug_info    0x00000000000256e3     0x1b18 hal/Src/stm32wlxx_hal_rcc_ex.o
- .debug_info    0x00000000000271fb      0x7ce hal/Src/stm32wlxx_hal_gpio.o
- .debug_info    0x00000000000279c9      0xaf7 hal/Src/stm32wlxx_hal_cortex.o
- .debug_info    0x00000000000284c0      0x8ba hal/Src/stm32wlxx_hal_pwr.o
- .debug_info    0x0000000000028d7a       0x22 startup_cm0p.o
- .debug_info    0x0000000000028d9c       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
- .debug_info    0x0000000000028dc2       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
- .debug_info    0x0000000000028de8       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
- .debug_info    0x0000000000028e0e       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_uldivmod.o)
- .debug_info    0x0000000000028e34      0x431 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
- .debug_info    0x0000000000029265      0x39f /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
- .debug_info    0x0000000000029604       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzsi2.o)
- .debug_info    0x000000000002962a       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzdi2.o)
- .debug_info    0x0000000000029650       0xb8 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
- .debug_info    0x0000000000029708      0x15c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
- .debug_info    0x0000000000029864      0x13d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
- .debug_info    0x00000000000299a1      0x9b9 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
- .debug_info    0x000000000002a35a       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
- .debug_info    0x000000000002a380       0xee /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
- .debug_info    0x000000000002a46e      0xa07 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
- .debug_info    0x000000000002ae75      0x863 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-impure.o)
- .debug_info    0x000000000002b6d8     0x10e0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
- .debug_info    0x000000000002c7b8      0xeb3 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_info    0x000000000002d66b      0x14e /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
- .debug_info    0x000000000002d7b9      0x152 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
- .debug_info    0x000000000002d90b      0x928 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
- .debug_info    0x000000000002e233      0xa09 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
- .debug_info    0x000000000002ec3c      0x910 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
- .debug_info    0x000000000002f54c      0x828 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
- .debug_info    0x000000000002fd74      0x7dc /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
- .debug_info    0x0000000000030550      0x840 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
- .debug_info    0x0000000000030d90      0xa7b /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
- .debug_info    0x000000000003180b       0x9d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
+.debug_info     0x0000000000000000    0x31be5
+ .debug_info    0x0000000000000000     0x26b4 Main_code/Main_GS/gs_main.o
+ .debug_info    0x00000000000026b4      0x520 uart/uart_debug.o
+ .debug_info    0x0000000000002bd4      0xc95 protocol/ax25/ax25.o
+ .debug_info    0x0000000000003869      0xc63 Mission/protocol.o
+ .debug_info    0x00000000000044cc     0x1f11 Mission/radio_app.o
+ .debug_info    0x00000000000063dd      0x94a protocol/stm32wlxx_it.o
+ .debug_info    0x0000000000006d27      0x545 protocol/stm32_lpm.o
+ .debug_info    0x000000000000726c      0x23c core/stm32_mem.o
+ .debug_info    0x00000000000074a8      0x5a0 core/system_stm32wlxx.o
+ .debug_info    0x0000000000007a48     0x15dd core/timer_if.o
+ .debug_info    0x0000000000009025      0xd2b core/rtc.o
+ .debug_info    0x0000000000009d50       0xe3 core/error_handler.o
+ .debug_info    0x0000000000009e33     0x19c0 core/stm32_adv_trace.o
+ .debug_info    0x000000000000b7f3      0x45e core/stm32_tiny_vsnprintf.o
+ .debug_info    0x000000000000bc51      0x2c5 core/stm32_trace_driver.o
+ .debug_info    0x000000000000bf16     0x4f9d radio_driver/radio.o
+ .debug_info    0x0000000000010eb3     0x7e06 radio_driver/radio_driver.o
+ .debug_info    0x0000000000018cb9      0xc7c radio_driver/radio_fw.o
+ .debug_info    0x0000000000019935     0x1018 radio_driver/stm32_timer.o
+ .debug_info    0x000000000001a94d      0xf41 radio_driver/sys_app.o
+ .debug_info    0x000000000001b88e      0xd27 target/radio_board_if.o
+ .debug_info    0x000000000001c5b5      0x7d9 subghz/subghz.o
+ .debug_info    0x000000000001cd8e     0x12e0 hal/Src/stm32wlxx_hal.o
+ .debug_info    0x000000000001e06e     0x2784 hal/Src/stm32wlxx_hal_subghz.o
+ .debug_info    0x00000000000207f2     0x19a4 hal/Src/stm32wlxx_hal_rtc.o
+ .debug_info    0x0000000000022196     0x18d9 hal/Src/stm32wlxx_hal_rtc_ex.o
+ .debug_info    0x0000000000023a6f     0x1fb1 hal/Src/stm32wlxx_hal_rcc.o
+ .debug_info    0x0000000000025a20     0x1b18 hal/Src/stm32wlxx_hal_rcc_ex.o
+ .debug_info    0x0000000000027538      0x7ce hal/Src/stm32wlxx_hal_gpio.o
+ .debug_info    0x0000000000027d06      0xaf7 hal/Src/stm32wlxx_hal_cortex.o
+ .debug_info    0x00000000000287fd      0x8ba hal/Src/stm32wlxx_hal_pwr.o
+ .debug_info    0x00000000000290b7       0x22 startup_cm0p.o
+ .debug_info    0x00000000000290d9       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
+ .debug_info    0x00000000000290ff       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
+ .debug_info    0x0000000000029125       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_info    0x000000000002914b       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .debug_info    0x0000000000029171      0x431 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
+ .debug_info    0x00000000000295a2      0x39f /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_info    0x0000000000029941       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzsi2.o)
+ .debug_info    0x0000000000029967       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzdi2.o)
+ .debug_info    0x000000000002998d       0xb8 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
+ .debug_info    0x0000000000029a45      0x15c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
+ .debug_info    0x0000000000029ba1      0x13d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
+ .debug_info    0x0000000000029cde      0x9b9 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
+ .debug_info    0x000000000002a697       0x26 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
+ .debug_info    0x000000000002a6bd       0xee /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
+ .debug_info    0x000000000002a7ab      0xa07 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
+ .debug_info    0x000000000002b1b2      0x863 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-impure.o)
+ .debug_info    0x000000000002ba15     0x10e0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
+ .debug_info    0x000000000002caf5      0xeb3 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_info    0x000000000002d9a8      0x14e /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
+ .debug_info    0x000000000002daf6      0x152 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
+ .debug_info    0x000000000002dc48      0x928 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
+ .debug_info    0x000000000002e570      0xa09 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
+ .debug_info    0x000000000002ef79      0x910 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
+ .debug_info    0x000000000002f889      0x828 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
+ .debug_info    0x00000000000300b1      0x7dc /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
+ .debug_info    0x000000000003088d      0x840 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
+ .debug_info    0x00000000000310cd      0xa7b /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
+ .debug_info    0x0000000000031b48       0x9d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
 
-.debug_abbrev   0x0000000000000000     0x7d15
+.debug_abbrev   0x0000000000000000     0x7d73
  .debug_abbrev  0x0000000000000000      0x4eb Main_code/Main_GS/gs_main.o
- .debug_abbrev  0x00000000000004eb      0x28e uart/uart_debug.o
- .debug_abbrev  0x0000000000000779      0x332 protocol/ax25/ax25.o
- .debug_abbrev  0x0000000000000aab      0x301 Mission/protocol.o
- .debug_abbrev  0x0000000000000dac      0x32b Mission/radio_app.o
- .debug_abbrev  0x00000000000010d7      0x250 protocol/stm32wlxx_it.o
- .debug_abbrev  0x0000000000001327      0x22d protocol/stm32_lpm.o
- .debug_abbrev  0x0000000000001554      0x109 core/stm32_mem.o
- .debug_abbrev  0x000000000000165d      0x153 core/system_stm32wlxx.o
- .debug_abbrev  0x00000000000017b0      0x411 core/timer_if.o
- .debug_abbrev  0x0000000000001bc1      0x283 core/rtc.o
- .debug_abbrev  0x0000000000001e44       0xa6 core/error_handler.o
- .debug_abbrev  0x0000000000001eea      0x4d2 core/stm32_adv_trace.o
- .debug_abbrev  0x00000000000023bc      0x1f3 core/stm32_tiny_vsnprintf.o
- .debug_abbrev  0x00000000000025af      0x189 core/stm32_trace_driver.o
- .debug_abbrev  0x0000000000002738      0x4a0 radio_driver/radio.o
- .debug_abbrev  0x0000000000002bd8      0x583 radio_driver/radio_driver.o
- .debug_abbrev  0x000000000000315b      0x262 radio_driver/radio_fw.o
- .debug_abbrev  0x00000000000033bd      0x492 radio_driver/stm32_timer.o
- .debug_abbrev  0x000000000000384f      0x334 radio_driver/sys_app.o
- .debug_abbrev  0x0000000000003b83      0x291 target/radio_board_if.o
- .debug_abbrev  0x0000000000003e14      0x213 subghz/subghz.o
- .debug_abbrev  0x0000000000004027      0x3e6 hal/Src/stm32wlxx_hal.o
- .debug_abbrev  0x000000000000440d      0x401 hal/Src/stm32wlxx_hal_subghz.o
- .debug_abbrev  0x000000000000480e      0x32a hal/Src/stm32wlxx_hal_rtc.o
- .debug_abbrev  0x0000000000004b38      0x2af hal/Src/stm32wlxx_hal_rtc_ex.o
- .debug_abbrev  0x0000000000004de7      0x3ee hal/Src/stm32wlxx_hal_rcc.o
- .debug_abbrev  0x00000000000051d5      0x3ae hal/Src/stm32wlxx_hal_rcc_ex.o
- .debug_abbrev  0x0000000000005583      0x218 hal/Src/stm32wlxx_hal_gpio.o
- .debug_abbrev  0x000000000000579b      0x2af hal/Src/stm32wlxx_hal_cortex.o
- .debug_abbrev  0x0000000000005a4a      0x212 hal/Src/stm32wlxx_hal_pwr.o
- .debug_abbrev  0x0000000000005c5c       0x12 startup_cm0p.o
- .debug_abbrev  0x0000000000005c6e       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
- .debug_abbrev  0x0000000000005c82       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
- .debug_abbrev  0x0000000000005c96       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
- .debug_abbrev  0x0000000000005caa       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_uldivmod.o)
- .debug_abbrev  0x0000000000005cbe      0x13b /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
- .debug_abbrev  0x0000000000005df9      0x11b /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
- .debug_abbrev  0x0000000000005f14       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzsi2.o)
- .debug_abbrev  0x0000000000005f28       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzdi2.o)
- .debug_abbrev  0x0000000000005f3c       0x62 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
- .debug_abbrev  0x0000000000005f9e       0xc7 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
- .debug_abbrev  0x0000000000006065       0xb4 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
- .debug_abbrev  0x0000000000006119      0x216 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
- .debug_abbrev  0x000000000000632f       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
- .debug_abbrev  0x0000000000006343       0x8f /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
- .debug_abbrev  0x00000000000063d2      0x27d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
- .debug_abbrev  0x000000000000664f      0x151 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-impure.o)
- .debug_abbrev  0x00000000000067a0      0x2ca /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
- .debug_abbrev  0x0000000000006a6a      0x292 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_abbrev  0x0000000000006cfc       0xd4 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
- .debug_abbrev  0x0000000000006dd0       0xc0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
- .debug_abbrev  0x0000000000006e90      0x232 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
- .debug_abbrev  0x00000000000070c2      0x297 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
- .debug_abbrev  0x0000000000007359      0x1d3 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
- .debug_abbrev  0x000000000000752c      0x1d6 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
- .debug_abbrev  0x0000000000007702      0x189 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
- .debug_abbrev  0x000000000000788b      0x191 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
- .debug_abbrev  0x0000000000007a1c      0x257 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
- .debug_abbrev  0x0000000000007c73       0xa2 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
+ .debug_abbrev  0x00000000000004eb      0x264 uart/uart_debug.o
+ .debug_abbrev  0x000000000000074f      0x332 protocol/ax25/ax25.o
+ .debug_abbrev  0x0000000000000a81      0x312 Mission/protocol.o
+ .debug_abbrev  0x0000000000000d93      0x32b Mission/radio_app.o
+ .debug_abbrev  0x00000000000010be      0x250 protocol/stm32wlxx_it.o
+ .debug_abbrev  0x000000000000130e      0x22d protocol/stm32_lpm.o
+ .debug_abbrev  0x000000000000153b      0x109 core/stm32_mem.o
+ .debug_abbrev  0x0000000000001644      0x153 core/system_stm32wlxx.o
+ .debug_abbrev  0x0000000000001797      0x411 core/timer_if.o
+ .debug_abbrev  0x0000000000001ba8      0x283 core/rtc.o
+ .debug_abbrev  0x0000000000001e2b       0xa6 core/error_handler.o
+ .debug_abbrev  0x0000000000001ed1      0x4d2 core/stm32_adv_trace.o
+ .debug_abbrev  0x00000000000023a3      0x1f3 core/stm32_tiny_vsnprintf.o
+ .debug_abbrev  0x0000000000002596      0x189 core/stm32_trace_driver.o
+ .debug_abbrev  0x000000000000271f      0x4a0 radio_driver/radio.o
+ .debug_abbrev  0x0000000000002bbf      0x583 radio_driver/radio_driver.o
+ .debug_abbrev  0x0000000000003142      0x262 radio_driver/radio_fw.o
+ .debug_abbrev  0x00000000000033a4      0x492 radio_driver/stm32_timer.o
+ .debug_abbrev  0x0000000000003836      0x334 radio_driver/sys_app.o
+ .debug_abbrev  0x0000000000003b6a      0x308 target/radio_board_if.o
+ .debug_abbrev  0x0000000000003e72      0x213 subghz/subghz.o
+ .debug_abbrev  0x0000000000004085      0x3e6 hal/Src/stm32wlxx_hal.o
+ .debug_abbrev  0x000000000000446b      0x401 hal/Src/stm32wlxx_hal_subghz.o
+ .debug_abbrev  0x000000000000486c      0x32a hal/Src/stm32wlxx_hal_rtc.o
+ .debug_abbrev  0x0000000000004b96      0x2af hal/Src/stm32wlxx_hal_rtc_ex.o
+ .debug_abbrev  0x0000000000004e45      0x3ee hal/Src/stm32wlxx_hal_rcc.o
+ .debug_abbrev  0x0000000000005233      0x3ae hal/Src/stm32wlxx_hal_rcc_ex.o
+ .debug_abbrev  0x00000000000055e1      0x218 hal/Src/stm32wlxx_hal_gpio.o
+ .debug_abbrev  0x00000000000057f9      0x2af hal/Src/stm32wlxx_hal_cortex.o
+ .debug_abbrev  0x0000000000005aa8      0x212 hal/Src/stm32wlxx_hal_pwr.o
+ .debug_abbrev  0x0000000000005cba       0x12 startup_cm0p.o
+ .debug_abbrev  0x0000000000005ccc       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
+ .debug_abbrev  0x0000000000005ce0       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
+ .debug_abbrev  0x0000000000005cf4       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_abbrev  0x0000000000005d08       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .debug_abbrev  0x0000000000005d1c      0x13b /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
+ .debug_abbrev  0x0000000000005e57      0x11b /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_abbrev  0x0000000000005f72       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzsi2.o)
+ .debug_abbrev  0x0000000000005f86       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzdi2.o)
+ .debug_abbrev  0x0000000000005f9a       0x62 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
+ .debug_abbrev  0x0000000000005ffc       0xc7 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
+ .debug_abbrev  0x00000000000060c3       0xb4 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
+ .debug_abbrev  0x0000000000006177      0x216 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
+ .debug_abbrev  0x000000000000638d       0x14 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
+ .debug_abbrev  0x00000000000063a1       0x8f /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
+ .debug_abbrev  0x0000000000006430      0x27d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
+ .debug_abbrev  0x00000000000066ad      0x151 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-impure.o)
+ .debug_abbrev  0x00000000000067fe      0x2ca /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
+ .debug_abbrev  0x0000000000006ac8      0x292 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_abbrev  0x0000000000006d5a       0xd4 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
+ .debug_abbrev  0x0000000000006e2e       0xc0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
+ .debug_abbrev  0x0000000000006eee      0x232 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
+ .debug_abbrev  0x0000000000007120      0x297 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
+ .debug_abbrev  0x00000000000073b7      0x1d3 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
+ .debug_abbrev  0x000000000000758a      0x1d6 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
+ .debug_abbrev  0x0000000000007760      0x189 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
+ .debug_abbrev  0x00000000000078e9      0x191 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
+ .debug_abbrev  0x0000000000007a7a      0x257 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
+ .debug_abbrev  0x0000000000007cd1       0xa2 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
 
-.debug_loc      0x0000000000000000    0x1905b
+.debug_loc      0x0000000000000000    0x18e78
  .debug_loc     0x0000000000000000      0x9a4 Main_code/Main_GS/gs_main.o
- .debug_loc     0x00000000000009a4      0x2d5 uart/uart_debug.o
- .debug_loc     0x0000000000000c79     0x14b6 protocol/ax25/ax25.o
- .debug_loc     0x000000000000212f     0x11ea Mission/protocol.o
- .debug_loc     0x0000000000003319      0x167 Mission/radio_app.o
- .debug_loc     0x0000000000003480       0xfc protocol/stm32wlxx_it.o
- .debug_loc     0x000000000000357c      0x206 protocol/stm32_lpm.o
- .debug_loc     0x0000000000003782      0x26d core/stm32_mem.o
- .debug_loc     0x00000000000039ef      0x15e core/system_stm32wlxx.o
- .debug_loc     0x0000000000003b4d      0x7c9 core/timer_if.o
- .debug_loc     0x0000000000004316       0xb1 core/rtc.o
- .debug_loc     0x00000000000043c7     0x1178 core/stm32_adv_trace.o
- .debug_loc     0x000000000000553f     0x104b core/stm32_tiny_vsnprintf.o
- .debug_loc     0x000000000000658a       0x4a core/stm32_trace_driver.o
- .debug_loc     0x00000000000065d4     0x228d radio_driver/radio.o
- .debug_loc     0x0000000000008861     0x4b37 radio_driver/radio_driver.o
- .debug_loc     0x000000000000d398       0xde radio_driver/radio_fw.o
- .debug_loc     0x000000000000d476      0xcd8 radio_driver/stm32_timer.o
- .debug_loc     0x000000000000e14e      0x202 radio_driver/sys_app.o
- .debug_loc     0x000000000000e350       0xd0 target/radio_board_if.o
- .debug_loc     0x000000000000e420       0x76 subghz/subghz.o
- .debug_loc     0x000000000000e496      0x4eb hal/Src/stm32wlxx_hal.o
- .debug_loc     0x000000000000e981     0x218e hal/Src/stm32wlxx_hal_subghz.o
- .debug_loc     0x0000000000010b0f     0x1780 hal/Src/stm32wlxx_hal_rtc.o
- .debug_loc     0x000000000001228f     0x1469 hal/Src/stm32wlxx_hal_rtc_ex.o
- .debug_loc     0x00000000000136f8      0xd05 hal/Src/stm32wlxx_hal_rcc.o
- .debug_loc     0x00000000000143fd      0xacf hal/Src/stm32wlxx_hal_rcc_ex.o
- .debug_loc     0x0000000000014ecc      0x593 hal/Src/stm32wlxx_hal_gpio.o
- .debug_loc     0x000000000001545f      0x4c7 hal/Src/stm32wlxx_hal_cortex.o
- .debug_loc     0x0000000000015926      0x21c hal/Src/stm32wlxx_hal_pwr.o
- .debug_loc     0x0000000000015b42      0x1c7 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
- .debug_loc     0x0000000000015d09      0x3d3 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
- .debug_loc     0x00000000000160dc      0x457 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
- .debug_loc     0x0000000000016533      0x2a3 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
- .debug_loc     0x00000000000167d6      0x276 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
- .debug_loc     0x0000000000016a4c       0x90 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
- .debug_loc     0x0000000000016adc      0x4c0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
- .debug_loc     0x0000000000016f9c      0xa08 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
- .debug_loc     0x00000000000179a4      0x660 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_loc     0x0000000000018004      0x21d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
- .debug_loc     0x0000000000018221      0x508 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
- .debug_loc     0x0000000000018729      0x1d8 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
- .debug_loc     0x0000000000018901      0x2a9 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
- .debug_loc     0x0000000000018baa      0x17b /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
- .debug_loc     0x0000000000018d25       0x79 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
- .debug_loc     0x0000000000018d9e       0xcc /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
- .debug_loc     0x0000000000018e6a      0x199 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
- .debug_loc     0x0000000000019003       0x58 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
+ .debug_loc     0x00000000000009a4      0x2a6 uart/uart_debug.o
+ .debug_loc     0x0000000000000c4a     0x14b6 protocol/ax25/ax25.o
+ .debug_loc     0x0000000000002100      0xfbc Mission/protocol.o
+ .debug_loc     0x00000000000030bc      0x167 Mission/radio_app.o
+ .debug_loc     0x0000000000003223       0xfc protocol/stm32wlxx_it.o
+ .debug_loc     0x000000000000331f      0x206 protocol/stm32_lpm.o
+ .debug_loc     0x0000000000003525      0x26d core/stm32_mem.o
+ .debug_loc     0x0000000000003792      0x15e core/system_stm32wlxx.o
+ .debug_loc     0x00000000000038f0      0x7c9 core/timer_if.o
+ .debug_loc     0x00000000000040b9       0xb1 core/rtc.o
+ .debug_loc     0x000000000000416a     0x1178 core/stm32_adv_trace.o
+ .debug_loc     0x00000000000052e2     0x104b core/stm32_tiny_vsnprintf.o
+ .debug_loc     0x000000000000632d       0x4a core/stm32_trace_driver.o
+ .debug_loc     0x0000000000006377     0x228d radio_driver/radio.o
+ .debug_loc     0x0000000000008604     0x4b50 radio_driver/radio_driver.o
+ .debug_loc     0x000000000000d154       0xde radio_driver/radio_fw.o
+ .debug_loc     0x000000000000d232      0xcd8 radio_driver/stm32_timer.o
+ .debug_loc     0x000000000000df0a      0x202 radio_driver/sys_app.o
+ .debug_loc     0x000000000000e10c      0x131 target/radio_board_if.o
+ .debug_loc     0x000000000000e23d       0x76 subghz/subghz.o
+ .debug_loc     0x000000000000e2b3      0x4eb hal/Src/stm32wlxx_hal.o
+ .debug_loc     0x000000000000e79e     0x218e hal/Src/stm32wlxx_hal_subghz.o
+ .debug_loc     0x000000000001092c     0x1780 hal/Src/stm32wlxx_hal_rtc.o
+ .debug_loc     0x00000000000120ac     0x1469 hal/Src/stm32wlxx_hal_rtc_ex.o
+ .debug_loc     0x0000000000013515      0xd05 hal/Src/stm32wlxx_hal_rcc.o
+ .debug_loc     0x000000000001421a      0xacf hal/Src/stm32wlxx_hal_rcc_ex.o
+ .debug_loc     0x0000000000014ce9      0x593 hal/Src/stm32wlxx_hal_gpio.o
+ .debug_loc     0x000000000001527c      0x4c7 hal/Src/stm32wlxx_hal_cortex.o
+ .debug_loc     0x0000000000015743      0x21c hal/Src/stm32wlxx_hal_pwr.o
+ .debug_loc     0x000000000001595f      0x1c7 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
+ .debug_loc     0x0000000000015b26      0x3d3 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_loc     0x0000000000015ef9      0x457 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
+ .debug_loc     0x0000000000016350      0x2a3 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
+ .debug_loc     0x00000000000165f3      0x276 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
+ .debug_loc     0x0000000000016869       0x90 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
+ .debug_loc     0x00000000000168f9      0x4c0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
+ .debug_loc     0x0000000000016db9      0xa08 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
+ .debug_loc     0x00000000000177c1      0x660 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_loc     0x0000000000017e21      0x21d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
+ .debug_loc     0x000000000001803e      0x508 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
+ .debug_loc     0x0000000000018546      0x1d8 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
+ .debug_loc     0x000000000001871e      0x2a9 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
+ .debug_loc     0x00000000000189c7      0x17b /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
+ .debug_loc     0x0000000000018b42       0x79 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
+ .debug_loc     0x0000000000018bbb       0xcc /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
+ .debug_loc     0x0000000000018c87      0x199 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
+ .debug_loc     0x0000000000018e20       0x58 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
 
-.debug_aranges  0x0000000000000000     0x1470
+.debug_aranges  0x0000000000000000     0x1488
  .debug_aranges
                 0x0000000000000000       0x48 Main_code/Main_GS/gs_main.o
  .debug_aranges
@@ -2531,303 +2551,303 @@ LOAD linker stubs
  .debug_aranges
                 0x0000000000000968       0x60 radio_driver/sys_app.o
  .debug_aranges
-                0x00000000000009c8       0x58 target/radio_board_if.o
+                0x00000000000009c8       0x70 target/radio_board_if.o
  .debug_aranges
-                0x0000000000000a20       0x30 subghz/subghz.o
+                0x0000000000000a38       0x30 subghz/subghz.o
  .debug_aranges
-                0x0000000000000a50       0xe8 hal/Src/stm32wlxx_hal.o
+                0x0000000000000a68       0xe8 hal/Src/stm32wlxx_hal.o
  .debug_aranges
-                0x0000000000000b38       0xb0 hal/Src/stm32wlxx_hal_subghz.o
+                0x0000000000000b50       0xb0 hal/Src/stm32wlxx_hal_subghz.o
  .debug_aranges
-                0x0000000000000be8       0xd8 hal/Src/stm32wlxx_hal_rtc.o
+                0x0000000000000c00       0xd8 hal/Src/stm32wlxx_hal_rtc.o
  .debug_aranges
-                0x0000000000000cc0      0x158 hal/Src/stm32wlxx_hal_rtc_ex.o
+                0x0000000000000cd8      0x158 hal/Src/stm32wlxx_hal_rtc_ex.o
  .debug_aranges
-                0x0000000000000e18       0xa0 hal/Src/stm32wlxx_hal_rcc.o
+                0x0000000000000e30       0xa0 hal/Src/stm32wlxx_hal_rcc.o
  .debug_aranges
-                0x0000000000000eb8       0x88 hal/Src/stm32wlxx_hal_rcc_ex.o
+                0x0000000000000ed0       0x88 hal/Src/stm32wlxx_hal_rcc_ex.o
  .debug_aranges
-                0x0000000000000f40       0x60 hal/Src/stm32wlxx_hal_gpio.o
+                0x0000000000000f58       0x60 hal/Src/stm32wlxx_hal_gpio.o
  .debug_aranges
-                0x0000000000000fa0       0xa0 hal/Src/stm32wlxx_hal_cortex.o
+                0x0000000000000fb8       0xa0 hal/Src/stm32wlxx_hal_cortex.o
  .debug_aranges
-                0x0000000000001040       0x98 hal/Src/stm32wlxx_hal_pwr.o
+                0x0000000000001058       0x98 hal/Src/stm32wlxx_hal_pwr.o
  .debug_aranges
-                0x00000000000010d8       0x28 startup_cm0p.o
+                0x00000000000010f0       0x28 startup_cm0p.o
  .debug_aranges
-                0x0000000000001100       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
+                0x0000000000001118       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
  .debug_aranges
-                0x0000000000001120       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
+                0x0000000000001138       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
  .debug_aranges
-                0x0000000000001140       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
+                0x0000000000001158       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
  .debug_aranges
-                0x0000000000001160       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_uldivmod.o)
+                0x0000000000001178       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_uldivmod.o)
  .debug_aranges
-                0x0000000000001180       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
+                0x0000000000001198       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
  .debug_aranges
-                0x00000000000011a0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
+                0x00000000000011b8       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
  .debug_aranges
-                0x00000000000011c0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzsi2.o)
+                0x00000000000011d8       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzsi2.o)
  .debug_aranges
-                0x00000000000011e0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzdi2.o)
+                0x00000000000011f8       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzdi2.o)
  .debug_aranges
-                0x0000000000001200       0x18 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
+                0x0000000000001218       0x18 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
  .debug_aranges
-                0x0000000000001218       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
+                0x0000000000001230       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
  .debug_aranges
-                0x0000000000001238       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
+                0x0000000000001250       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
  .debug_aranges
-                0x0000000000001258       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
+                0x0000000000001270       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
  .debug_aranges
-                0x0000000000001278       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
+                0x0000000000001290       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
  .debug_aranges
-                0x0000000000001298       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
+                0x00000000000012b0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
  .debug_aranges
-                0x00000000000012b8       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
+                0x00000000000012d0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
  .debug_aranges
-                0x00000000000012d8       0x18 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-impure.o)
+                0x00000000000012f0       0x18 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-impure.o)
  .debug_aranges
-                0x00000000000012f0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
+                0x0000000000001308       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
  .debug_aranges
-                0x0000000000001310       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                0x0000000000001328       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
  .debug_aranges
-                0x0000000000001330       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
+                0x0000000000001348       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
  .debug_aranges
-                0x0000000000001350       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
+                0x0000000000001368       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
  .debug_aranges
-                0x0000000000001370       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
+                0x0000000000001388       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
  .debug_aranges
-                0x0000000000001390       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
+                0x00000000000013a8       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
  .debug_aranges
-                0x00000000000013b0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
+                0x00000000000013c8       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
  .debug_aranges
-                0x00000000000013d0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
+                0x00000000000013e8       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
  .debug_aranges
-                0x00000000000013f0       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
+                0x0000000000001408       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
  .debug_aranges
-                0x0000000000001410       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
+                0x0000000000001428       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
  .debug_aranges
-                0x0000000000001430       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
+                0x0000000000001448       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
  .debug_aranges
-                0x0000000000001450       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
+                0x0000000000001468       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
 
-.debug_ranges   0x0000000000000000     0x40d8
+.debug_ranges   0x0000000000000000     0x4070
  .debug_ranges  0x0000000000000000      0x298 Main_code/Main_GS/gs_main.o
- .debug_ranges  0x0000000000000298       0xd8 uart/uart_debug.o
- .debug_ranges  0x0000000000000370      0x318 protocol/ax25/ax25.o
- .debug_ranges  0x0000000000000688      0x488 Mission/protocol.o
- .debug_ranges  0x0000000000000b10       0x60 Mission/radio_app.o
- .debug_ranges  0x0000000000000b70       0xc0 protocol/stm32wlxx_it.o
- .debug_ranges  0x0000000000000c30       0x50 protocol/stm32_lpm.o
- .debug_ranges  0x0000000000000c80       0x20 core/stm32_mem.o
- .debug_ranges  0x0000000000000ca0       0x18 core/system_stm32wlxx.o
- .debug_ranges  0x0000000000000cb8      0x200 core/timer_if.o
- .debug_ranges  0x0000000000000eb8       0x40 core/rtc.o
- .debug_ranges  0x0000000000000ef8       0x10 core/error_handler.o
- .debug_ranges  0x0000000000000f08      0x228 core/stm32_adv_trace.o
- .debug_ranges  0x0000000000001130       0x80 core/stm32_tiny_vsnprintf.o
- .debug_ranges  0x00000000000011b0       0x20 core/stm32_trace_driver.o
- .debug_ranges  0x00000000000011d0      0x550 radio_driver/radio.o
- .debug_ranges  0x0000000000001720      0x6a0 radio_driver/radio_driver.o
- .debug_ranges  0x0000000000001dc0       0x48 radio_driver/radio_fw.o
- .debug_ranges  0x0000000000001e08      0x208 radio_driver/stm32_timer.o
- .debug_ranges  0x0000000000002010       0xe8 radio_driver/sys_app.o
- .debug_ranges  0x00000000000020f8       0x60 target/radio_board_if.o
- .debug_ranges  0x0000000000002158       0x70 subghz/subghz.o
- .debug_ranges  0x00000000000021c8      0x238 hal/Src/stm32wlxx_hal.o
- .debug_ranges  0x0000000000002400      0x850 hal/Src/stm32wlxx_hal_subghz.o
- .debug_ranges  0x0000000000002c50      0x288 hal/Src/stm32wlxx_hal_rtc.o
- .debug_ranges  0x0000000000002ed8      0x148 hal/Src/stm32wlxx_hal_rtc_ex.o
- .debug_ranges  0x0000000000003020      0x778 hal/Src/stm32wlxx_hal_rcc.o
- .debug_ranges  0x0000000000003798      0x580 hal/Src/stm32wlxx_hal_rcc_ex.o
- .debug_ranges  0x0000000000003d18       0x50 hal/Src/stm32wlxx_hal_gpio.o
- .debug_ranges  0x0000000000003d68      0x128 hal/Src/stm32wlxx_hal_cortex.o
- .debug_ranges  0x0000000000003e90       0xa8 hal/Src/stm32wlxx_hal_pwr.o
- .debug_ranges  0x0000000000003f38       0x20 startup_cm0p.o
- .debug_ranges  0x0000000000003f58       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
- .debug_ranges  0x0000000000003f88       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
- .debug_ranges  0x0000000000003fa8       0x50 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
- .debug_ranges  0x0000000000003ff8       0x88 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_ranges  0x0000000000004080       0x18 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
- .debug_ranges  0x0000000000004098       0x40 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
+ .debug_ranges  0x0000000000000298       0xc0 uart/uart_debug.o
+ .debug_ranges  0x0000000000000358      0x318 protocol/ax25/ax25.o
+ .debug_ranges  0x0000000000000670      0x408 Mission/protocol.o
+ .debug_ranges  0x0000000000000a78       0x60 Mission/radio_app.o
+ .debug_ranges  0x0000000000000ad8       0xc0 protocol/stm32wlxx_it.o
+ .debug_ranges  0x0000000000000b98       0x50 protocol/stm32_lpm.o
+ .debug_ranges  0x0000000000000be8       0x20 core/stm32_mem.o
+ .debug_ranges  0x0000000000000c08       0x18 core/system_stm32wlxx.o
+ .debug_ranges  0x0000000000000c20      0x200 core/timer_if.o
+ .debug_ranges  0x0000000000000e20       0x40 core/rtc.o
+ .debug_ranges  0x0000000000000e60       0x10 core/error_handler.o
+ .debug_ranges  0x0000000000000e70      0x228 core/stm32_adv_trace.o
+ .debug_ranges  0x0000000000001098       0x80 core/stm32_tiny_vsnprintf.o
+ .debug_ranges  0x0000000000001118       0x20 core/stm32_trace_driver.o
+ .debug_ranges  0x0000000000001138      0x550 radio_driver/radio.o
+ .debug_ranges  0x0000000000001688      0x6b0 radio_driver/radio_driver.o
+ .debug_ranges  0x0000000000001d38       0x48 radio_driver/radio_fw.o
+ .debug_ranges  0x0000000000001d80      0x208 radio_driver/stm32_timer.o
+ .debug_ranges  0x0000000000001f88       0xe8 radio_driver/sys_app.o
+ .debug_ranges  0x0000000000002070       0x80 target/radio_board_if.o
+ .debug_ranges  0x00000000000020f0       0x70 subghz/subghz.o
+ .debug_ranges  0x0000000000002160      0x238 hal/Src/stm32wlxx_hal.o
+ .debug_ranges  0x0000000000002398      0x850 hal/Src/stm32wlxx_hal_subghz.o
+ .debug_ranges  0x0000000000002be8      0x288 hal/Src/stm32wlxx_hal_rtc.o
+ .debug_ranges  0x0000000000002e70      0x148 hal/Src/stm32wlxx_hal_rtc_ex.o
+ .debug_ranges  0x0000000000002fb8      0x778 hal/Src/stm32wlxx_hal_rcc.o
+ .debug_ranges  0x0000000000003730      0x580 hal/Src/stm32wlxx_hal_rcc_ex.o
+ .debug_ranges  0x0000000000003cb0       0x50 hal/Src/stm32wlxx_hal_gpio.o
+ .debug_ranges  0x0000000000003d00      0x128 hal/Src/stm32wlxx_hal_cortex.o
+ .debug_ranges  0x0000000000003e28       0xa8 hal/Src/stm32wlxx_hal_pwr.o
+ .debug_ranges  0x0000000000003ed0       0x20 startup_cm0p.o
+ .debug_ranges  0x0000000000003ef0       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
+ .debug_ranges  0x0000000000003f20       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
+ .debug_ranges  0x0000000000003f40       0x50 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
+ .debug_ranges  0x0000000000003f90       0x88 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_ranges  0x0000000000004018       0x18 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
+ .debug_ranges  0x0000000000004030       0x40 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
 
-.debug_line     0x0000000000000000    0x19282
+.debug_line     0x0000000000000000    0x193ef
  .debug_line    0x0000000000000000      0xb04 Main_code/Main_GS/gs_main.o
- .debug_line    0x0000000000000b04      0x66e uart/uart_debug.o
- .debug_line    0x0000000000001172      0x933 protocol/ax25/ax25.o
- .debug_line    0x0000000000001aa5      0x918 Mission/protocol.o
- .debug_line    0x00000000000023bd      0x3bc Mission/radio_app.o
- .debug_line    0x0000000000002779      0x4d9 protocol/stm32wlxx_it.o
- .debug_line    0x0000000000002c52      0x30a protocol/stm32_lpm.o
- .debug_line    0x0000000000002f5c      0x12e core/stm32_mem.o
- .debug_line    0x000000000000308a      0x1f0 core/system_stm32wlxx.o
- .debug_line    0x000000000000327a      0xa01 core/timer_if.o
- .debug_line    0x0000000000003c7b      0x376 core/rtc.o
- .debug_line    0x0000000000003ff1       0xfb core/error_handler.o
- .debug_line    0x00000000000040ec     0x1178 core/stm32_adv_trace.o
- .debug_line    0x0000000000005264      0x659 core/stm32_tiny_vsnprintf.o
- .debug_line    0x00000000000058bd      0x109 core/stm32_trace_driver.o
- .debug_line    0x00000000000059c6     0x2159 radio_driver/radio.o
- .debug_line    0x0000000000007b1f     0x354a radio_driver/radio_driver.o
- .debug_line    0x000000000000b069      0x1a4 radio_driver/radio_fw.o
- .debug_line    0x000000000000b20d      0xacb radio_driver/stm32_timer.o
- .debug_line    0x000000000000bcd8      0x4d6 radio_driver/sys_app.o
- .debug_line    0x000000000000c1ae      0x390 target/radio_board_if.o
- .debug_line    0x000000000000c53e      0x242 subghz/subghz.o
- .debug_line    0x000000000000c780      0x8e1 hal/Src/stm32wlxx_hal.o
- .debug_line    0x000000000000d061     0x1c43 hal/Src/stm32wlxx_hal_subghz.o
- .debug_line    0x000000000000eca4     0x1582 hal/Src/stm32wlxx_hal_rtc.o
- .debug_line    0x0000000000010226     0x1a99 hal/Src/stm32wlxx_hal_rtc_ex.o
- .debug_line    0x0000000000011cbf     0x1cb0 hal/Src/stm32wlxx_hal_rcc.o
- .debug_line    0x000000000001396f     0x125e hal/Src/stm32wlxx_hal_rcc_ex.o
- .debug_line    0x0000000000014bcd      0x689 hal/Src/stm32wlxx_hal_gpio.o
- .debug_line    0x0000000000015256      0x64d hal/Src/stm32wlxx_hal_cortex.o
- .debug_line    0x00000000000158a3      0x499 hal/Src/stm32wlxx_hal_pwr.o
- .debug_line    0x0000000000015d3c       0x76 startup_cm0p.o
- .debug_line    0x0000000000015db2       0x6c /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
- .debug_line    0x0000000000015e1e       0x73 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
- .debug_line    0x0000000000015e91       0x60 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
- .debug_line    0x0000000000015ef1       0x6b /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_uldivmod.o)
- .debug_line    0x0000000000015f5c      0x12e /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
- .debug_line    0x000000000001608a      0x1c2 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
- .debug_line    0x000000000001624c       0x74 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzsi2.o)
- .debug_line    0x00000000000162c0       0x6a /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzdi2.o)
- .debug_line    0x000000000001632a       0x5e /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
- .debug_line    0x0000000000016388      0x1b5 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
- .debug_line    0x000000000001653d      0x1ce /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
- .debug_line    0x000000000001670b      0x366 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
- .debug_line    0x0000000000016a71       0xb0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
- .debug_line    0x0000000000016b21      0x172 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
- .debug_line    0x0000000000016c93      0x2fa /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
- .debug_line    0x0000000000016f8d       0xe4 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-impure.o)
- .debug_line    0x0000000000017071      0x8be /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
- .debug_line    0x000000000001792f      0x718 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_line    0x0000000000018047      0x1b1 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
- .debug_line    0x00000000000181f8      0x1e1 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
- .debug_line    0x00000000000183d9      0x2d0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
- .debug_line    0x00000000000186a9      0x2ca /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
- .debug_line    0x0000000000018973      0x1ab /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
- .debug_line    0x0000000000018b1e      0x183 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
- .debug_line    0x0000000000018ca1      0x13e /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
- .debug_line    0x0000000000018ddf      0x163 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
- .debug_line    0x0000000000018f42      0x2ba /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
- .debug_line    0x00000000000191fc       0x86 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
+ .debug_line    0x0000000000000b04      0x633 uart/uart_debug.o
+ .debug_line    0x0000000000001137      0x933 protocol/ax25/ax25.o
+ .debug_line    0x0000000000001a6a      0x8e7 Mission/protocol.o
+ .debug_line    0x0000000000002351      0x3bc Mission/radio_app.o
+ .debug_line    0x000000000000270d      0x4d9 protocol/stm32wlxx_it.o
+ .debug_line    0x0000000000002be6      0x30a protocol/stm32_lpm.o
+ .debug_line    0x0000000000002ef0      0x12e core/stm32_mem.o
+ .debug_line    0x000000000000301e      0x1f0 core/system_stm32wlxx.o
+ .debug_line    0x000000000000320e      0xa01 core/timer_if.o
+ .debug_line    0x0000000000003c0f      0x376 core/rtc.o
+ .debug_line    0x0000000000003f85       0xfb core/error_handler.o
+ .debug_line    0x0000000000004080     0x1178 core/stm32_adv_trace.o
+ .debug_line    0x00000000000051f8      0x659 core/stm32_tiny_vsnprintf.o
+ .debug_line    0x0000000000005851      0x109 core/stm32_trace_driver.o
+ .debug_line    0x000000000000595a     0x2159 radio_driver/radio.o
+ .debug_line    0x0000000000007ab3     0x3567 radio_driver/radio_driver.o
+ .debug_line    0x000000000000b01a      0x1a4 radio_driver/radio_fw.o
+ .debug_line    0x000000000000b1be      0xacb radio_driver/stm32_timer.o
+ .debug_line    0x000000000000bc89      0x4d6 radio_driver/sys_app.o
+ .debug_line    0x000000000000c15f      0x549 target/radio_board_if.o
+ .debug_line    0x000000000000c6a8      0x242 subghz/subghz.o
+ .debug_line    0x000000000000c8ea      0x8e1 hal/Src/stm32wlxx_hal.o
+ .debug_line    0x000000000000d1cb     0x1c43 hal/Src/stm32wlxx_hal_subghz.o
+ .debug_line    0x000000000000ee0e     0x1582 hal/Src/stm32wlxx_hal_rtc.o
+ .debug_line    0x0000000000010390     0x1a99 hal/Src/stm32wlxx_hal_rtc_ex.o
+ .debug_line    0x0000000000011e29     0x1cb0 hal/Src/stm32wlxx_hal_rcc.o
+ .debug_line    0x0000000000013ad9     0x125e hal/Src/stm32wlxx_hal_rcc_ex.o
+ .debug_line    0x0000000000014d37      0x689 hal/Src/stm32wlxx_hal_gpio.o
+ .debug_line    0x00000000000153c0      0x64d hal/Src/stm32wlxx_hal_cortex.o
+ .debug_line    0x0000000000015a0d      0x499 hal/Src/stm32wlxx_hal_pwr.o
+ .debug_line    0x0000000000015ea6       0x79 startup_cm0p.o
+ .debug_line    0x0000000000015f1f       0x6c /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
+ .debug_line    0x0000000000015f8b       0x73 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
+ .debug_line    0x0000000000015ffe       0x60 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_line    0x000000000001605e       0x6b /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .debug_line    0x00000000000160c9      0x12e /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
+ .debug_line    0x00000000000161f7      0x1c2 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_line    0x00000000000163b9       0x74 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzsi2.o)
+ .debug_line    0x000000000001642d       0x6a /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzdi2.o)
+ .debug_line    0x0000000000016497       0x5e /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
+ .debug_line    0x00000000000164f5      0x1b5 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
+ .debug_line    0x00000000000166aa      0x1ce /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
+ .debug_line    0x0000000000016878      0x366 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
+ .debug_line    0x0000000000016bde       0xb0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
+ .debug_line    0x0000000000016c8e      0x172 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
+ .debug_line    0x0000000000016e00      0x2fa /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
+ .debug_line    0x00000000000170fa       0xe4 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-impure.o)
+ .debug_line    0x00000000000171de      0x8be /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
+ .debug_line    0x0000000000017a9c      0x718 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_line    0x00000000000181b4      0x1b1 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
+ .debug_line    0x0000000000018365      0x1e1 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
+ .debug_line    0x0000000000018546      0x2d0 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
+ .debug_line    0x0000000000018816      0x2ca /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
+ .debug_line    0x0000000000018ae0      0x1ab /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
+ .debug_line    0x0000000000018c8b      0x183 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
+ .debug_line    0x0000000000018e0e      0x13e /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
+ .debug_line    0x0000000000018f4c      0x163 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
+ .debug_line    0x00000000000190af      0x2ba /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
+ .debug_line    0x0000000000019369       0x86 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
 
-.debug_str      0x0000000000000000     0x96aa
- .debug_str     0x0000000000000000     0x17cc Main_code/Main_GS/gs_main.o
-                                       0x1a88 (size before relaxing)
- .debug_str     0x00000000000017cc       0xd5 uart/uart_debug.o
-                                        0x284 (size before relaxing)
- .debug_str     0x00000000000018a1      0x225 protocol/ax25/ax25.o
+.debug_str      0x0000000000000000     0x972f
+ .debug_str     0x0000000000000000     0x17e2 Main_code/Main_GS/gs_main.o
+                                       0x1a9e (size before relaxing)
+ .debug_str     0x00000000000017e2       0x9c uart/uart_debug.o
+                                        0x24b (size before relaxing)
+ .debug_str     0x000000000000187e      0x225 protocol/ax25/ax25.o
                                         0x42d (size before relaxing)
- .debug_str     0x0000000000001ac6      0x1c6 Mission/protocol.o
-                                        0x501 (size before relaxing)
- .debug_str     0x0000000000001c8c      0x794 Mission/radio_app.o
-                                       0x1d5a (size before relaxing)
- .debug_str     0x0000000000002420      0x462 protocol/stm32wlxx_it.o
+ .debug_str     0x0000000000001aa3      0x1d8 Mission/protocol.o
+                                        0x513 (size before relaxing)
+ .debug_str     0x0000000000001c7b      0x794 Mission/radio_app.o
+                                       0x1d70 (size before relaxing)
+ .debug_str     0x000000000000240f      0x462 protocol/stm32wlxx_it.o
                                         0x627 (size before relaxing)
- .debug_str     0x0000000000002882      0x1f3 protocol/stm32_lpm.o
+ .debug_str     0x0000000000002871      0x1f3 protocol/stm32_lpm.o
                                         0x47f (size before relaxing)
- .debug_str     0x0000000000002a75       0x49 core/stm32_mem.o
+ .debug_str     0x0000000000002a64       0x49 core/stm32_mem.o
                                         0x1d6 (size before relaxing)
- .debug_str     0x0000000000002abe      0x1e4 core/system_stm32wlxx.o
+ .debug_str     0x0000000000002aad      0x1e4 core/system_stm32wlxx.o
                                         0x41b (size before relaxing)
- .debug_str     0x0000000000002ca2      0x6b0 core/timer_if.o
+ .debug_str     0x0000000000002c91      0x6ca core/timer_if.o
                                         0xc4c (size before relaxing)
- .debug_str     0x0000000000003352      0x22e core/rtc.o
+ .debug_str     0x000000000000335b      0x22e core/rtc.o
                                         0xb1c (size before relaxing)
- .debug_str     0x0000000000003580       0x15 core/error_handler.o
+ .debug_str     0x0000000000003589       0x15 core/error_handler.o
                                         0x18d (size before relaxing)
- .debug_str     0x0000000000003595      0x53b core/stm32_adv_trace.o
+ .debug_str     0x000000000000359e      0x53b core/stm32_adv_trace.o
                                         0x89c (size before relaxing)
- .debug_str     0x0000000000003ad0       0x87 core/stm32_tiny_vsnprintf.o
+ .debug_str     0x0000000000003ad9       0x87 core/stm32_tiny_vsnprintf.o
                                         0x245 (size before relaxing)
- .debug_str     0x0000000000003b57       0x3d core/stm32_trace_driver.o
+ .debug_str     0x0000000000003b60       0x3d core/stm32_trace_driver.o
                                         0x3cf (size before relaxing)
- .debug_str     0x0000000000003b94      0xb13 radio_driver/radio.o
-                                       0x278a (size before relaxing)
- .debug_str     0x00000000000046a7      0xca7 radio_driver/radio_driver.o
-                                       0x1e9a (size before relaxing)
- .debug_str     0x000000000000534e       0xb9 radio_driver/radio_fw.o
+ .debug_str     0x0000000000003b9d      0xb13 radio_driver/radio.o
+                                       0x27a0 (size before relaxing)
+ .debug_str     0x00000000000046b0      0xcbb radio_driver/radio_driver.o
+                                       0x1ec4 (size before relaxing)
+ .debug_str     0x000000000000536b       0xb9 radio_driver/radio_fw.o
                                         0xd79 (size before relaxing)
- .debug_str     0x0000000000005407      0x1ba radio_driver/stm32_timer.o
+ .debug_str     0x0000000000005424      0x1ba radio_driver/stm32_timer.o
                                         0x71c (size before relaxing)
- .debug_str     0x00000000000055c1      0x302 radio_driver/sys_app.o
+ .debug_str     0x00000000000055de      0x302 radio_driver/sys_app.o
                                         0x9eb (size before relaxing)
- .debug_str     0x00000000000058c3      0x109 target/radio_board_if.o
-                                        0x648 (size before relaxing)
- .debug_str     0x00000000000059cc       0x8e subghz/subghz.o
+ .debug_str     0x00000000000058e0      0x159 target/radio_board_if.o
+                                        0x6c9 (size before relaxing)
+ .debug_str     0x0000000000005a39       0x8e subghz/subghz.o
                                         0x7a0 (size before relaxing)
- .debug_str     0x0000000000005a5a      0x627 hal/Src/stm32wlxx_hal.o
+ .debug_str     0x0000000000005ac7      0x627 hal/Src/stm32wlxx_hal.o
                                         0xc82 (size before relaxing)
- .debug_str     0x0000000000006081      0x22d hal/Src/stm32wlxx_hal_subghz.o
+ .debug_str     0x00000000000060ee      0x22d hal/Src/stm32wlxx_hal_subghz.o
                                         0xe01 (size before relaxing)
- .debug_str     0x00000000000062ae      0x293 hal/Src/stm32wlxx_hal_rtc.o
+ .debug_str     0x000000000000631b      0x293 hal/Src/stm32wlxx_hal_rtc.o
                                         0x8af (size before relaxing)
- .debug_str     0x0000000000006541      0x6db hal/Src/stm32wlxx_hal_rtc_ex.o
+ .debug_str     0x00000000000065ae      0x6db hal/Src/stm32wlxx_hal_rtc_ex.o
                                         0xdaa (size before relaxing)
- .debug_str     0x0000000000006c1c      0x92e hal/Src/stm32wlxx_hal_rcc.o
+ .debug_str     0x0000000000006c89      0x946 hal/Src/stm32wlxx_hal_rcc.o
                                         0xea0 (size before relaxing)
- .debug_str     0x000000000000754a      0x4e0 hal/Src/stm32wlxx_hal_rcc_ex.o
+ .debug_str     0x00000000000075cf      0x4e0 hal/Src/stm32wlxx_hal_rcc_ex.o
                                         0xcd3 (size before relaxing)
- .debug_str     0x0000000000007a2a       0xe5 hal/Src/stm32wlxx_hal_gpio.o
+ .debug_str     0x0000000000007aaf       0xe5 hal/Src/stm32wlxx_hal_gpio.o
                                         0x434 (size before relaxing)
- .debug_str     0x0000000000007b0f      0x30b hal/Src/stm32wlxx_hal_cortex.o
+ .debug_str     0x0000000000007b94      0x30b hal/Src/stm32wlxx_hal_cortex.o
                                         0x758 (size before relaxing)
- .debug_str     0x0000000000007e1a      0x2bb hal/Src/stm32wlxx_hal_pwr.o
+ .debug_str     0x0000000000007e9f      0x2bb hal/Src/stm32wlxx_hal_pwr.o
                                         0x5f5 (size before relaxing)
- .debug_str     0x00000000000080d5       0x1b startup_cm0p.o
+ .debug_str     0x000000000000815a       0x1b startup_cm0p.o
                                          0x42 (size before relaxing)
- .debug_str     0x00000000000080f0       0xa6 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
- .debug_str     0x0000000000008196       0xa6 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
- .debug_str     0x0000000000008196       0xa6 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
- .debug_str     0x0000000000008196       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_uldivmod.o)
+ .debug_str     0x0000000000008175       0xa6 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
+ .debug_str     0x000000000000821b       0xa6 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
+ .debug_str     0x000000000000821b       0xa6 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_str     0x000000000000821b       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_aeabi_uldivmod.o)
                                          0xa6 (size before relaxing)
- .debug_str     0x00000000000081c6      0x528 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
+ .debug_str     0x000000000000824b      0x528 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
                                         0x62c (size before relaxing)
- .debug_str     0x00000000000086ee       0xd2 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_str     0x0000000000008773       0xd2 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
                                         0x602 (size before relaxing)
- .debug_str     0x00000000000087c0       0xa6 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzsi2.o)
- .debug_str     0x00000000000087c0       0xa6 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzdi2.o)
- .debug_str     0x00000000000087c0      0x100 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
+ .debug_str     0x0000000000008845       0xa6 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzsi2.o)
+ .debug_str     0x0000000000008845       0xa6 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_clzdi2.o)
+ .debug_str     0x0000000000008845      0x100 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-ctype_.o)
                                         0x19d (size before relaxing)
- .debug_str     0x00000000000088c0       0xcb /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
+ .debug_str     0x0000000000008945       0xcb /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
                                         0x1de (size before relaxing)
- .debug_str     0x000000000000898b       0x9f /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
+ .debug_str     0x0000000000008a10       0x9f /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
                                         0x1b9 (size before relaxing)
- .debug_str     0x0000000000008a2a      0x3b3 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
+ .debug_str     0x0000000000008aaf      0x3b3 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
                                         0x554 (size before relaxing)
- .debug_str     0x0000000000008ddd       0x43 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
+ .debug_str     0x0000000000008e62       0x43 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
                                          0xb2 (size before relaxing)
- .debug_str     0x0000000000008e20       0x41 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
+ .debug_str     0x0000000000008ea5       0x41 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
                                         0x1ca (size before relaxing)
- .debug_str     0x0000000000008e61       0x43 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
+ .debug_str     0x0000000000008ee6       0x43 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
                                         0x557 (size before relaxing)
- .debug_str     0x0000000000008ea4       0xee /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-impure.o)
+ .debug_str     0x0000000000008f29       0xee /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-impure.o)
                                         0x557 (size before relaxing)
- .debug_str     0x0000000000008f92      0x28d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
+ .debug_str     0x0000000000009017      0x28d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
                                         0x84e (size before relaxing)
- .debug_str     0x000000000000921f       0x8d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_str     0x00000000000092a4       0x8d /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
                                         0x7f6 (size before relaxing)
- .debug_str     0x00000000000092ac       0x54 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
+ .debug_str     0x0000000000009331       0x54 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
                                         0x1d1 (size before relaxing)
- .debug_str     0x0000000000009300       0x3e /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
+ .debug_str     0x0000000000009385       0x3e /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
                                         0x1d8 (size before relaxing)
- .debug_str     0x000000000000933e      0x112 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
+ .debug_str     0x00000000000093c3      0x112 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
                                         0x58e (size before relaxing)
- .debug_str     0x0000000000009450       0x46 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
+ .debug_str     0x00000000000094d5       0x46 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
                                         0x5b9 (size before relaxing)
- .debug_str     0x0000000000009496       0x23 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
+ .debug_str     0x000000000000951b       0x23 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
                                         0x578 (size before relaxing)
- .debug_str     0x00000000000094b9       0x47 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
+ .debug_str     0x000000000000953e       0x47 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
                                         0x50f (size before relaxing)
- .debug_str     0x0000000000009500       0x4c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
+ .debug_str     0x0000000000009585       0x4c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
                                         0x525 (size before relaxing)
- .debug_str     0x000000000000954c        0xf /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
+ .debug_str     0x00000000000095d1        0xf /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
                                         0x556 (size before relaxing)
- .debug_str     0x000000000000955b       0x5e /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
+ .debug_str     0x00000000000095e0       0x5e /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
                                         0x537 (size before relaxing)
- .debug_str     0x00000000000095b9       0xf1 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
+ .debug_str     0x000000000000963e       0xf1 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
                                         0x10a (size before relaxing)
 
 .comment        0x0000000000000000       0x33
@@ -3008,57 +3028,57 @@ LOAD linker stubs
  .ARM.attributes
                 0x00000000000009b5       0x2c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
 
-.debug_frame    0x0000000000000000     0x344c
+.debug_frame    0x0000000000000000     0x347c
  .debug_frame   0x0000000000000000       0xc0 Main_code/Main_GS/gs_main.o
- .debug_frame   0x00000000000000c0      0x104 uart/uart_debug.o
- .debug_frame   0x00000000000001c4      0x178 protocol/ax25/ax25.o
- .debug_frame   0x000000000000033c       0x9c Mission/protocol.o
- .debug_frame   0x00000000000003d8       0xe4 Mission/radio_app.o
- .debug_frame   0x00000000000004bc      0x13c protocol/stm32wlxx_it.o
- .debug_frame   0x00000000000005f8       0x7c protocol/stm32_lpm.o
- .debug_frame   0x0000000000000674       0x58 core/stm32_mem.o
- .debug_frame   0x00000000000006cc       0x38 core/system_stm32wlxx.o
- .debug_frame   0x0000000000000704      0x1c4 core/timer_if.o
- .debug_frame   0x00000000000008c8       0x60 core/rtc.o
- .debug_frame   0x0000000000000928       0x20 core/error_handler.o
- .debug_frame   0x0000000000000948      0x234 core/stm32_adv_trace.o
- .debug_frame   0x0000000000000b7c       0x3c core/stm32_tiny_vsnprintf.o
- .debug_frame   0x0000000000000bb8       0x40 core/stm32_trace_driver.o
- .debug_frame   0x0000000000000bf8      0x3fc radio_driver/radio.o
- .debug_frame   0x0000000000000ff4      0x768 radio_driver/radio_driver.o
- .debug_frame   0x000000000000175c       0xd0 radio_driver/radio_fw.o
- .debug_frame   0x000000000000182c      0x21c radio_driver/stm32_timer.o
- .debug_frame   0x0000000000001a48       0xf8 radio_driver/sys_app.o
- .debug_frame   0x0000000000001b40       0xc8 target/radio_board_if.o
- .debug_frame   0x0000000000001c08       0x58 subghz/subghz.o
- .debug_frame   0x0000000000001c60      0x210 hal/Src/stm32wlxx_hal.o
- .debug_frame   0x0000000000001e70      0x2d8 hal/Src/stm32wlxx_hal_subghz.o
- .debug_frame   0x0000000000002148      0x2a4 hal/Src/stm32wlxx_hal_rtc.o
- .debug_frame   0x00000000000023ec      0x538 hal/Src/stm32wlxx_hal_rtc_ex.o
- .debug_frame   0x0000000000002924      0x1dc hal/Src/stm32wlxx_hal_rcc.o
- .debug_frame   0x0000000000002b00      0x140 hal/Src/stm32wlxx_hal_rcc_ex.o
- .debug_frame   0x0000000000002c40       0xe4 hal/Src/stm32wlxx_hal_gpio.o
- .debug_frame   0x0000000000002d24      0x134 hal/Src/stm32wlxx_hal_cortex.o
- .debug_frame   0x0000000000002e58      0x130 hal/Src/stm32wlxx_hal_pwr.o
- .debug_frame   0x0000000000002f88       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
- .debug_frame   0x0000000000002fa8       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
- .debug_frame   0x0000000000002fc8       0x34 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
- .debug_frame   0x0000000000002ffc       0x3c /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
- .debug_frame   0x0000000000003038       0x34 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
- .debug_frame   0x000000000000306c       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
- .debug_frame   0x000000000000309c       0x50 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
- .debug_frame   0x00000000000030ec       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
- .debug_frame   0x000000000000310c       0x28 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
- .debug_frame   0x0000000000003134       0x4c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
- .debug_frame   0x0000000000003180       0x90 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
- .debug_frame   0x0000000000003210       0x68 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_frame   0x0000000000003278       0x2c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
- .debug_frame   0x00000000000032a4       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
- .debug_frame   0x00000000000032d4       0x2c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
- .debug_frame   0x0000000000003300       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
- .debug_frame   0x0000000000003330       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
- .debug_frame   0x0000000000003360       0x2c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
- .debug_frame   0x000000000000338c       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
- .debug_frame   0x00000000000033bc       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
- .debug_frame   0x00000000000033dc       0x50 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
- .debug_frame   0x000000000000342c       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
+ .debug_frame   0x00000000000000c0       0xf8 uart/uart_debug.o
+ .debug_frame   0x00000000000001b8      0x178 protocol/ax25/ax25.o
+ .debug_frame   0x0000000000000330       0x9c Mission/protocol.o
+ .debug_frame   0x00000000000003cc       0xe4 Mission/radio_app.o
+ .debug_frame   0x00000000000004b0      0x13c protocol/stm32wlxx_it.o
+ .debug_frame   0x00000000000005ec       0x7c protocol/stm32_lpm.o
+ .debug_frame   0x0000000000000668       0x58 core/stm32_mem.o
+ .debug_frame   0x00000000000006c0       0x38 core/system_stm32wlxx.o
+ .debug_frame   0x00000000000006f8      0x1c4 core/timer_if.o
+ .debug_frame   0x00000000000008bc       0x60 core/rtc.o
+ .debug_frame   0x000000000000091c       0x20 core/error_handler.o
+ .debug_frame   0x000000000000093c      0x234 core/stm32_adv_trace.o
+ .debug_frame   0x0000000000000b70       0x3c core/stm32_tiny_vsnprintf.o
+ .debug_frame   0x0000000000000bac       0x40 core/stm32_trace_driver.o
+ .debug_frame   0x0000000000000bec      0x3fc radio_driver/radio.o
+ .debug_frame   0x0000000000000fe8      0x768 radio_driver/radio_driver.o
+ .debug_frame   0x0000000000001750       0xd0 radio_driver/radio_fw.o
+ .debug_frame   0x0000000000001820      0x21c radio_driver/stm32_timer.o
+ .debug_frame   0x0000000000001a3c       0xf8 radio_driver/sys_app.o
+ .debug_frame   0x0000000000001b34      0x104 target/radio_board_if.o
+ .debug_frame   0x0000000000001c38       0x58 subghz/subghz.o
+ .debug_frame   0x0000000000001c90      0x210 hal/Src/stm32wlxx_hal.o
+ .debug_frame   0x0000000000001ea0      0x2d8 hal/Src/stm32wlxx_hal_subghz.o
+ .debug_frame   0x0000000000002178      0x2a4 hal/Src/stm32wlxx_hal_rtc.o
+ .debug_frame   0x000000000000241c      0x538 hal/Src/stm32wlxx_hal_rtc_ex.o
+ .debug_frame   0x0000000000002954      0x1dc hal/Src/stm32wlxx_hal_rcc.o
+ .debug_frame   0x0000000000002b30      0x140 hal/Src/stm32wlxx_hal_rcc_ex.o
+ .debug_frame   0x0000000000002c70       0xe4 hal/Src/stm32wlxx_hal_gpio.o
+ .debug_frame   0x0000000000002d54      0x134 hal/Src/stm32wlxx_hal_cortex.o
+ .debug_frame   0x0000000000002e88      0x130 hal/Src/stm32wlxx_hal_pwr.o
+ .debug_frame   0x0000000000002fb8       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivsi3.o)
+ .debug_frame   0x0000000000002fd8       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_divsi3.o)
+ .debug_frame   0x0000000000002ff8       0x34 /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_muldi3.o)
+ .debug_frame   0x000000000000302c       0x3c /usr/lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp/libgcc.a(_udivmoddi4.o)
+ .debug_frame   0x0000000000003068       0x34 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memcpy-stub.o)
+ .debug_frame   0x000000000000309c       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memset.o)
+ .debug_frame   0x00000000000030cc       0x50 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-snprintf.o)
+ .debug_frame   0x000000000000311c       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strcmp.o)
+ .debug_frame   0x000000000000313c       0x28 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-strlen-stub.o)
+ .debug_frame   0x0000000000003164       0x4c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-vsnprintf.o)
+ .debug_frame   0x00000000000031b0       0x90 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-svfprintf.o)
+ .debug_frame   0x0000000000003240       0x68 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_frame   0x00000000000032a8       0x2c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memchr-stub.o)
+ .debug_frame   0x00000000000032d4       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-memmove.o)
+ .debug_frame   0x0000000000003304       0x2c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-freer.o)
+ .debug_frame   0x0000000000003330       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-mallocr.o)
+ .debug_frame   0x0000000000003360       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-reallocr.o)
+ .debug_frame   0x0000000000003390       0x2c /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-sbrkr.o)
+ .debug_frame   0x00000000000033bc       0x30 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-mlock.o)
+ .debug_frame   0x00000000000033ec       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-nano-msizer.o)
+ .debug_frame   0x000000000000340c       0x50 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libc_nano.a(lib_a-reent.o)
+ .debug_frame   0x000000000000345c       0x20 /usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/lib/thumb/v6-m/nofp/libnosys.a(sbrk.o)
